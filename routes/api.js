@@ -11,8 +11,13 @@ router.get("/", (req, res, next) => {
         console.log(article_title);
         let titleText = await page.evaluate(article_title => article_title.textContent, article_title);
 
-        let article_url = await page.$eval(".titleline > a[href]", el => el.getAttribute("href"));
-   
+        let articleFunction = () => {
+
+        }
+
+        let article_url = await page.$$(".titleline > a[href]", el => el.getAttribute("href"));
+        let json = res.json(Array.from(article_url))
+
         console.log(titleText);
         console.log(article_url);
 
