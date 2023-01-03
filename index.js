@@ -8,5 +8,5 @@ require('dotenv').config();
 
 app.listen(process.env.PORT);
 
-app.use("/1", api);
+ 
 app.use("/", api);
