@@ -18,7 +18,7 @@ router.get("/:num", (req, res, next) => {
             req params!!!!!
             
             `)
-        
+
             console.log(req.params)
             // Abrimos una instancia del puppeteer y accedemos a la url de google
             const browser = await puppeteer.launch();
@@ -31,16 +31,20 @@ router.get("/:num", (req, res, next) => {
 
             const { window: { document } } = new jsdom.JSDOM(body);
 
-            // We scrape the links and show them via the console.
-            
-            let arts_to_scrape = 30;
-            document.querySelectorAll('.titleline > a')
-                .forEach(element => console.log(element.getAttribute("href")));
-            for (i = 0; i < arts_to_scrape; i++) {
+            // We create an empty array:
+
+            const articles_arr = []
+
+            // We declare the function we will use later to fill the array
+
+            let getTitlesFunction = function (element) {
+                articles_arr.push({"article": element.textContent});
             }
+            
+            // I transit the DOM as usual, like any browser does, using the DOM API methods, and with the use of the Array.prototype.forEach() method, I execute the function over every tag containing a title. There, with the use of element.textContent I extract the text to fill the array. Every articule's description will be inside an object.
 
-            let output_obj = {}
-
+            document.querySelectorAll('tr > td > span[class="titleline"] > a').forEach(getTitlesFunction);
+            console.log(articles_arr)
             // We close the browser
             await browser.close();
         } catch (error) {
