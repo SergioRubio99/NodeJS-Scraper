@@ -5,13 +5,7 @@ const num = (req, res, next) => {
 
     let articles_arr = [];
     (async () => {
-        try {
-            console.log(`
-    
-            req params!!!!!
-            
-            `)
-
+      
             // We create an empty array:
 
 
@@ -31,7 +25,7 @@ const num = (req, res, next) => {
                 const { window: { document } } = new jsdom.JSDOM(body);
 
                 // We declare the function we will use later to fill the array
-                
+
                 let newArrObj = { "page": [] }
                 let getTitlesFunction = function (element) {
                     newArrObj.page.push({"article": element.textContent})
@@ -48,9 +42,7 @@ const num = (req, res, next) => {
       
             // We close the browser
             await browser.close();
-        } catch (error) {
-            console.error(error);
-        }
+      
     })();
 
  
