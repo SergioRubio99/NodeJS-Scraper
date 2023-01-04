@@ -43,11 +43,9 @@ const num = (req, res, next) => {
                 
                 articles_arr.push(newArrObj)
             }
-            setTimeout(() => {
-                console.log(articles_arr)
-                console.log(articles_arr.length)
-            },3000)
-
+            console.log(articles_arr)
+            console.log(articles_arr.length)
+      
             // We close the browser
             await browser.close();
         } catch (error) {
@@ -55,7 +53,7 @@ const num = (req, res, next) => {
         }
     })();
 
-    next();
+ 
 }
 
 module.exports = num;
