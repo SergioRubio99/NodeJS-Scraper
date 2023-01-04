@@ -37,7 +37,7 @@ const nonum =  (req, res, next) => {
                 
                 // I transit the DOM as usual, like any browser does, using the DOM API methods, and with the use of the Array.prototype.forEach() method, I execute the function on every HTML tag containing a news title. There, with the use of element.textContent I extract the text to fill the array. Every article's description will be inside an object.
                 
-                document.querySelectorAll('tr > td > span[class="titleline"] > a').forEach(getTitlesFunction);
+                document.querySelectorAll('td > span[class="titleline"] > a').forEach(getTitlesFunction);
                 
                 console.log(articles_arr)
                

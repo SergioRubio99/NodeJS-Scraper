@@ -31,7 +31,7 @@ const num = (req, res, next) => {
                 const { window: { document } } = new jsdom.JSDOM(body);
 
                 // We declare the function we will use later to fill the array
-
+                
                 let newArrObj = { "page": [] }
                 let getTitlesFunction = function (element) {
                     newArrObj.page.push({"article": element.textContent})
