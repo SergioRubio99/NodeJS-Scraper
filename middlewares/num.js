@@ -3,18 +3,15 @@ const jsdom = require("jsdom");
 
 const num = (req, res, next) => {
 
-    let articles_arr = [];
+    let pages_arr = [];
     (async () => {
-      
             // We create an empty array:
             let sum_of_pages = req.params.num
             console.log(req.params)
             console.log(sum_of_pages)
 
-
             try{
                 for (i = 1; i <= sum_of_pages; i++) {
-
                     //EUREKA!! If I put the browser variable declaration here, lifting a puppeteer instance everytime I iterate, a new browser will be set up to crawl every single page, separately! So no page will be left behind in the process of scraping. 
 
                     //Before this, with the browser constant declared outside the function's scope, I couldn't scrape more than 7 pages without randomly leaving some of them behind.
@@ -37,15 +34,14 @@ const num = (req, res, next) => {
                     
                     document.querySelectorAll('tr > td > span[class="titleline"] > a').forEach(getTitlesFunction);
                     
-                    articles_arr.push(newArrObj)
+                    pages_arr.push(newArrObj)
                     await browser.close();
                 }
             }catch(e){
                 console.log(e)
             }
-            console.log(articles_arr)
-            console.log(articles_arr.length)
-      
+            console.log(pages_arr)
+            console.log(pages_arr.length)
             // We close the browser
       
     })();
