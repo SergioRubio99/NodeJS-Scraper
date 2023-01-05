@@ -56,6 +56,8 @@ const num = (req, res, next) => {
             }catch(e){
                 console.log(e)
             }
+
+            
             console.clear()
             console.log(pages_arr)
             console.log(pages_arr.length)
