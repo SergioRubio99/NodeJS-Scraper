@@ -1,8 +1,9 @@
 const puppeteer = require('puppeteer');
 const jsdom = require("jsdom");
 
-const num = (req, res, next) => {
 
+const num = (req, res, next) => {
+    
     let pages_arr = [];
     (async () => {
             // We create an empty array:
@@ -21,22 +22,29 @@ const num = (req, res, next) => {
                     const response = await page.goto(`https://news.ycombinator.com/?p=${i}`);
                     const body = await response.text();
                     // We set up an instance of the puppeteer result, to send it to parse it with the help of JSDOM  
-    
+                    
                     const { window: { document } } = new jsdom.JSDOM(body);
-    
+                    newArrObjNameString = "page" + ` ${i}`;
+                    
+                    //I will use Object.values() method to iterate over the newArrObj as if it was an array, and then access the array inside. I need to do this, because if not, I cannot asign the variable names dinamically ("page 1", "page 2", etc), asigning a space in each object key. 
+
+                    let newArrObj = {}
+                    newArrObj[newArrObjNameString] =  [] ;
                     // We declare the function we will use later to fill the array
-    
-                    let newArrObj = { "page": [] }
+
                     let getTitlesFunction = function (element) {
-                        newArrObj.page.push({"article": element.textContent})
+                        let obj = Object.values(newArrObj)[0]
+                        obj.push({"article": element.textContent})
                     }
                     // I transit the DOM as usual, like any browser does, using the DOM API methods, and with the use of the Array.prototype.forEach() method, I execute the function on every HTML tag containing a news title. There, with the use of element.textContent I extract the text to fill the array. Every article's description will be inside an object.
                     
                     document.querySelectorAll('tr > td > span[class="titleline"] > a').forEach(getTitlesFunction);
-                    
                     pages_arr.push(newArrObj)
+                 
+                    console.log(pages_arr)
                     await browser.close();
                 }
+
             }catch(e){
                 console.log(e)
             }
