@@ -2,12 +2,12 @@ const puppeteer = require('puppeteer');
 const jsdom = require("jsdom");
 
 
+let pages_arr = [];
 const num = (req, res, next) => {
     
-    let pages_arr = [];
-    (async () => {
+     const scrape = async () => {
+        let sum_of_pages = req.params.num
             // We create an empty array:
-            let sum_of_pages = req.params.num
             console.log(req.params)
             console.log(sum_of_pages)
 
@@ -49,17 +49,21 @@ const num = (req, res, next) => {
 
                     
                     console.log(pages_arr)
+                    // We close the browser
                     await browser.close();
                 }
 
             }catch(e){
                 console.log(e)
             }
+            console.clear()
             console.log(pages_arr)
             console.log(pages_arr.length)
-            // We close the browser
+            return pages_arr;
       
-    })();
+    };
+
+    scrape()
 }
 
 module.exports = num;
