@@ -7,7 +7,7 @@ const jsdom = require("jsdom");
 let articles_arr = [];
 
 
-const nonum = async (req, res, next) => {
+const nonum = async () => {
         try {
             console.log(`
     
@@ -46,4 +46,4 @@ const nonum = async (req, res, next) => {
         }
 }
 
-module.exports = nonum
+module.exports = nonum;
