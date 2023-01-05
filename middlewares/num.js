@@ -40,7 +40,14 @@ const num = (req, res, next) => {
                     
                     document.querySelectorAll('tr > td > span[class="titleline"] > a').forEach(getTitlesFunction);
                     pages_arr.push(newArrObj)
-                 
+                    
+                    //This last line of code makes the crawler stop if it's taking no more information! This is useful if, for instance, the user inputs in the URL a number superior to the number of pages available in the website. It makes the loop stop (making "i" reach whatever number is sum_of_pages), and deletes with ( Array.prototype.pop() ) the last element of the pages_array (that will come empty, obviously): 
+                    if( Object.values(newArrObj)[0].length===0){
+                        i=sum_of_pages
+                        pages_arr.pop()
+                    }
+
+                    
                     console.log(pages_arr)
                     await browser.close();
                 }
