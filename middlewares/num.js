@@ -3,9 +3,8 @@ const jsdom = require("jsdom");
 
 
 let pages_arr = [];
-const num = (req, res, next) => {
+const num = async (req, res, next) => {
     
-     const scrape = async () => {
         let sum_of_pages = req.params.num
             // We create an empty array:
             console.log(req.params)
@@ -57,15 +56,11 @@ const num = (req, res, next) => {
                 console.log(e)
             }
 
-            
+
             console.clear()
             console.log(pages_arr)
             console.log(pages_arr.length)
             return pages_arr;
-      
-    };
-
-    scrape()
 }
 
 module.exports = num;

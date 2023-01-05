@@ -7,19 +7,13 @@ const jsdom = require("jsdom");
 let articles_arr = [];
 
 
-const nonum = (req, res, next) => {
-
-    (async () => {
+const nonum = async (req, res, next) => {
         try {
             console.log(`
     
             req params!!!!!
             
             `)
-
-
-
-
 
             // We lift a puppeteer instance.
 
@@ -44,16 +38,12 @@ const nonum = (req, res, next) => {
 
             console.log(articles_arr)
 
-
             // We close the browser
             await browser.close();
             
         } catch (error) {
             console.error(error);
         }
-    })();
-
-    next();
 }
 
 module.exports = nonum
