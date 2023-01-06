@@ -3,13 +3,13 @@ const jsdom = require("jsdom");
 
 
 let pages_arr = [];
-const num = async (req) => {
+const num = async (req, res) => {
 
-    let sum_of_pages = 8
+    let sum_of_pages = req.params.num
     // let sum_of_pages = req.params.num
 
     // We create an empty array:
-    console.log(sum_of_pages)
+    console.log("Total of pages to crawl! => ", sum_of_pages)
 
     try {
         for (i = 1; i <= sum_of_pages; i++) {
@@ -47,12 +47,21 @@ const num = async (req) => {
                 pages_arr.pop()
             }
 
-
+            console.log(`
+            
+            A new page has been crawled!  👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇
+            
+            `, newArrObj, `
+            
+            Page here! ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️
+            
+            `)
             // We close the browser
             await browser.close();
             // console.clear();
-            // console.log(pages_arr);
         }
+        console.log(pages_arr);
+        res.status(200).json({"nycombinatorscraped":pages_arr})
         return pages_arr
 
     } catch (e) {
