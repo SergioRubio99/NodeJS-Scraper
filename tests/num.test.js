@@ -7,6 +7,19 @@ jest.setTimeout(60000)
 
 // Tests:
 
+test("The result of the scrape comes in JSON format",
+    async () => {
+        const response = await fetch("http://localhost:3000/2")
+        const json = await response.json()
+        console.log(` 
+        arr.json
+        
+        ` ,json)
+        console.log("TYPEOF RESPONSE", typeof json)
+        expect(typeof json).toBe("object")
+    })
+
+    
 // test("Check whether or not every article entry is an Object with a String inside",
 //     async () => {
 //         const arr = await fetch("http://localhost:3000/2")
@@ -27,18 +40,6 @@ jest.setTimeout(60000)
 //         }
 //     })
 
-
-test("The result of the scrape comes in JSON format",
-    async () => {
-        const response = await fetch("http://localhost:3000/2")
-        const json = await response.json()
-        console.log(` 
-        arr.json
-        
-        ` ,json)
-        console.log("TYPEOF RESPONSE", typeof json)
-        expect(typeof json).toBe("object")
-    })
 
 
 // test("Inside the object, there is an array",
