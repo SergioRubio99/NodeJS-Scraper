@@ -5,7 +5,9 @@ const jsdom = require("jsdom");
 let pages_arr = [];
 const num = async (req) => {
 
-    let sum_of_pages = 5
+    let sum_of_pages = 2
+    // let sum_of_pages = req.params.num
+
     // We create an empty array:
     console.log(sum_of_pages)
 
@@ -48,10 +50,10 @@ const num = async (req) => {
 
             // We close the browser
             await browser.close();
-            return []
             console.clear();
             console.log(pages_arr);
         }
+        return pages_arr
 
     } catch (e) {
         console.log(e)
