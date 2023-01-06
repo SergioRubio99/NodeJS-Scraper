@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20% </span>
+                <span class="strong">19.35% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>6/30</span>
+                <span class='fraction'>6/31</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">20% </span>
+                <span class="strong">19.35% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/30</span>
+                <span class='fraction'>6/31</span>
             </div>
         
             
@@ -135,15 +135,14 @@
 <a name='L70'></a><a href='#L70'>70</a>
 <a name='L71'></a><a href='#L71'>71</a>
 <a name='L72'></a><a href='#L72'>72</a>
-<a name='L73'></a><a href='#L73'>73</a>
-<a name='L74'></a><a href='#L74'>74</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L73'></a><a href='#L73'>73</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -165,7 +164,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -199,7 +197,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -214,7 +212,7 @@ const jsdom = require("jsdom");
 &nbsp;
 &nbsp;
 let pages_arr = [];
-const num = async (req) =&gt; {
+const num = async (req, res) =&gt; {
 &nbsp;
     let sum_of_pages = req.params.num
     // let sum_of_pages = req.params.num
@@ -223,7 +221,7 @@ const num = async (req) =&gt; {
 <span class="cstat-no" title="statement not covered" >    console.log("Total of pages to crawl! =&gt; ", sum_of_pages)</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    try {</span>
-<span class="cstat-no" title="statement not covered" >        for (i = 1; i &lt;= sum_of_pages; i++) {</span>
+<span class="cstat-no" title="statement not covered" >        for (i = 1; i &lt;= sum_of_pages; ++i) {</span>
             //EUREKA!! If I put the browser variable declaration here, lifting a puppeteer instance everytime I iterate, a new browser will be set up to crawl every single page, separately! So no page will be left behind in the process of scraping. 
 &nbsp;
             //Before this, with the browser constant declared outside the function's scope, I couldn't scrape more than 7 pages without randomly leaving some of them behind.
@@ -236,7 +234,6 @@ const num = async (req) =&gt; {
 &nbsp;
             const { window: { document } } = <span class="cstat-no" title="statement not covered" >new jsdom.JSDOM(body);</span>
 <span class="cstat-no" title="statement not covered" >            newArrObjNameString = "page" + ` ${i}`;</span>
-&nbsp;
             //I will use Object.values() method to iterate over the newArrObj as if it was an array, and then access the array inside. I need to do this, because if not, I cannot asign the variable names dinamically ("page 1", "page 2", etc), asigning a space in each object key. 
 &nbsp;
             let newArrObj = <span class="cstat-no" title="statement not covered" >{}</span>
@@ -272,7 +269,7 @@ const num = async (req) =&gt; {
             // console.clear();
         }
 <span class="cstat-no" title="statement not covered" >        console.log(pages_arr);</span>
-&nbsp;
+<span class="cstat-no" title="statement not covered" >        res.status(200).json({"nycombinatorscraped":pages_arr})</span>
 <span class="cstat-no" title="statement not covered" >        return pages_arr</span>
 &nbsp;
     } catch (e) {
@@ -289,7 +286,7 @@ module.exports = num;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-01-06T01:39:45.387Z
+                at 2023-01-06T13:39:41.450Z
             </div>
         <script src="prettify.js"></script>
         <script>

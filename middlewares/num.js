@@ -25,7 +25,6 @@ const num = async (req, res) => {
 
             const { window: { document } } = new jsdom.JSDOM(body);
             newArrObjNameString = "page" + ` ${i}`;
-
             //I will use Object.values() method to iterate over the newArrObj as if it was an array, and then access the array inside. I need to do this, because if not, I cannot asign the variable names dinamically ("page 1", "page 2", etc), asigning a space in each object key. 
 
             let newArrObj = {}
