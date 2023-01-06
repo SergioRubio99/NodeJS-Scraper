@@ -1,5 +1,4 @@
 
-
 //We add this to increase the time limit!
 
 jest.setTimeout(60000);
@@ -10,9 +9,12 @@ jest.setTimeout(60000);
 
 let json;
 
+
 test("The result of the scrape comes in JSON format",
     async () => {
-        const response = await fetch("http://localhost:3000/26");
+        //Now, the testing does not work if no numbers are input a URL parameter. I can tweak them to do so, but I find it useless. 
+        
+        const response = await fetch("http://localhost:3000/10");
         json = await response.json();
         console.log(` 
         arr.json
