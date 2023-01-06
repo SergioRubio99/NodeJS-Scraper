@@ -1,5 +1,4 @@
-const num = require("../middlewares/num");
-const { get } = require("../routes/api");
+
 
 //We add this to increase the time limit!
 
@@ -13,7 +12,7 @@ let json;
 
 test("The result of the scrape comes in JSON format",
     async () => {
-        const response = await fetch("http://localhost:3000/2");
+        const response = await fetch("http://localhost:3000/26");
         json = await response.json();
         console.log(` 
         arr.json
