@@ -61,7 +61,6 @@ const num = async (req, res) => {
         }
         console.log(pages_arr);
         res.status(200).json({"nycombinatorscraped":pages_arr})
-        return pages_arr
 
     } catch (e) {
         console.log(e)
