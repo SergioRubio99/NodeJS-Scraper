@@ -12,7 +12,7 @@ const num = async (req, res) => {
     console.log("Total of pages to crawl! => ", sum_of_pages)
 
     try {
-        for (i = 1; i <= sum_of_pages; i++) {
+        for (i = 1; i <= sum_of_pages; ++i) {
             //EUREKA!! If I put the browser variable declaration here, lifting a puppeteer instance everytime I iterate, a new browser will be set up to crawl every single page, separately! So no page will be left behind in the process of scraping. 
 
             //Before this, with the browser constant declared outside the function's scope, I couldn't scrape more than 7 pages without randomly leaving some of them behind.
