@@ -6,6 +6,7 @@ let pages_arr = [];
 const num = async (req, res) => {
 
     let sum_of_pages = req.params.num
+    sum_of_pages===undefined?sum_of_pages=1:
     // let sum_of_pages = req.params.num
 
     // We create an empty array:

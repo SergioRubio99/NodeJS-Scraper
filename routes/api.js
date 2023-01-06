@@ -1,12 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
-const nonum = require("../middlewares/nonum");
-const num = require("../middlewares/num");
+const api = require("../middlewares/api");
 
-router.get("/", nonum);
 
-router.get("/:num", num);
-
+router.get("/", api);
+router.get("/:num", api);
 
 module.exports = router;
