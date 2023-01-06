@@ -1,43 +1,47 @@
 const num = require("../middlewares/num");
+const { get } = require("../routes/api");
 
 //We add this to increase the time limit!
 
-jest.setTimeout(60000)
+jest.setTimeout(60000);
 
 
 // Tests:
 
-// test("The result of the scrape comes in JSON format",
-//     async () => {
-//         const response = await fetch("http://localhost:3000/2")
-//         const json = await response.json()
-//         console.log(` 
-//         arr.json
+
+let json;
+
+test("The result of the scrape comes in JSON format",
+    async () => {
+        const response = await fetch("http://localhost:3000/2");
+        json = await response.json();
+        console.log(` 
+        arr.json
         
-//         ` , json)
-//         // console.log("TYPEOF RESPONSE", typeof json)
-//         expect(typeof json).toBe("object")
-//     })
+        ` , json)
+        // console.log("TYPEOF RESPONSE", typeof json)
+        expect(typeof json).toBe("object")
+    })
 
 
-// test("Inside the object, there is an array with data inside",
-//     async () => {
-//         const response = await fetch("http://localhost:3000/2")
-//         const json = await response.json()
-//         // console.log(`JSON ARR CHECK =>>>
-        
-//         // `, Array.isArray(json.nycombinatorscraped))
-//         expect(Array.isArray(json.nycombinatorscraped)).toBe(true)
-//         expect(json.nycombinatorscraped.length).toBeGreaterThan(0)
-//     }
-// )
+test("Inside the object, there is an array with data inside",
+    async () => {
+        // const response = await fetch("http://localhost:3000/2")
+        // const json = await response.json()
+        // console.log(`JSON ARR CHECK =>>>
+
+        // `, Array.isArray(json.nycombinatorscraped))
+        expect(Array.isArray(json.nycombinatorscraped)).toBe(true)
+        expect(json.nycombinatorscraped.length).toBeGreaterThan(0)
+    }
+)
 
 
 
 test("Check whether or not every article entry is an Object with a String inside",
     async () => {
-        const response = await fetch("http://localhost:3000/2");
-        const json = await response.json();
+        // const response = await fetch("http://localhost:3000/2");
+        // const json = await response.json();
         const arr = json.nycombinatorscraped;
         console.log(`JSON ARR CHECK =>>>
         `, json)
@@ -61,5 +65,7 @@ test("Check whether or not every article entry is an Object with a String inside
             })
         }
     })
+
+
 
 
