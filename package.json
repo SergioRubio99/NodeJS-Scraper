@@ -7,7 +7,6 @@
     "start": "node index.js",
     "start_dev": "nodemon index.js",
     "test": "jest --coverage"
-    
   },
   "keywords": [
     "nodejs",
@@ -24,6 +23,7 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsdom": "^20.0.3",
+    "node-cache": "^5.1.2",
     "puppeteer": "^19.4.1"
   }
 }

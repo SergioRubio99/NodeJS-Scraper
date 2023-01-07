@@ -1,16 +1,18 @@
 const puppeteer = require('puppeteer');
 const jsdom = require("jsdom");
+const NodeCache = require("node-cache");
+const myCache = new NodeCache({stdTTL: 10});
 
 
 let pages_arr = [];
 const num = async (req, res) => {
 
     let sum_of_pages = req.params.num
-    sum_of_pages===undefined?sum_of_pages=1:
-    // let sum_of_pages = req.params.num
+    sum_of_pages === undefined ? sum_of_pages = 1 :
+        // let sum_of_pages = req.params.num
 
-    // We create an empty array:
-    console.log("Total of pages to crawl! => ", sum_of_pages)
+        // We create an empty array:
+        console.log("Total of pages to crawl! => ", sum_of_pages)
 
     try {
         for (i = 1; i <= sum_of_pages; ++i) {
@@ -25,7 +27,7 @@ const num = async (req, res) => {
             // We set up an instance of the puppeteer result, to send it to parse it with the help of JSDOM  
 
             const { window: { document } } = new jsdom.JSDOM(body);
-            newArrObjNameString = "page" + ` ${i}`;
+            newArrObjNameString = `page ${i}`;
             //I will use Object.values() method to iterate over the newArrObj as if it was an array, and then access the array inside. I need to do this, because if not, I cannot asign the variable names dinamically ("page 1", "page 2", etc), asigning a space in each object key. 
 
             let newArrObj = {}
@@ -43,6 +45,7 @@ const num = async (req, res) => {
 
             //This last line of code makes the crawler stop if it's taking no more information! This is useful if, for instance, the user inputs in the URL a number superior to the number of pages available in the website. It makes the loop stop (making "i" reach whatever number is sum_of_pages), and deletes with ( Array.prototype.pop() ) the last element of the pages_array (that will come empty, obviously): 
             if (Object.values(newArrObj)[0].length === 0) {
+                //we stop the loop:
                 i = sum_of_pages
                 pages_arr.pop()
             }
@@ -61,8 +64,7 @@ const num = async (req, res) => {
             // console.clear();
         }
         console.log(pages_arr);
-        res.status(200).json({"nycombinatorscraped":pages_arr})
-
+        res.status(200).json({ "nycombinatorscraped": pages_arr })
     } catch (e) {
         console.log(e)
     }
