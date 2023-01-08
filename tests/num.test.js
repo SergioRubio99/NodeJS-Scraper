@@ -14,7 +14,7 @@ test("The result of the scrape comes in JSON format",
     async () => {
         //Now, the testing does not work if no numbers are input a URL parameter. I can tweak them to do so, but I find it useless. 
 
-        const response = await fetch("http://localhost:3000/5");
+        const response = await fetch("http://localhost:3000/3");
         json = await response.json();
         // console.log("TYPEOF RESPONSE", typeof json)
         expect(typeof json).toBe("object")

@@ -104,6 +104,8 @@ const num = async (req, res) => {
 
         if (cache.data["pages_first_half"]["v"].length == sum_of_pages) {
             console.log("THE CLIENT REQUESTED THE SAME AMOUNT OF PAGES THAT ARE CACHED ALREADY")
+            cache.set(`pages_first_half`, cache.data["pages_first_half"]["v"], 10);
+
             return res.status(200).json({ "nycombinatorscraped": cache.data["pages_first_half"]["v"] })
         }
 
@@ -111,6 +113,7 @@ const num = async (req, res) => {
 
         if (sum_of_pages < cache.data["pages_first_half"]["v"].length) {
             console.log("THE CLIENT REQUESTED LESS PAGES THAT THOSE CACHED ALREADY");
+            // cache.set(`pages_first_half`, cache.data["pages_first_half"]["v"].slice(0, sum_of_pages), 10);
             return res.status(200).json({ "nycombinatorscraped": cache.data["pages_first_half"]["v"].slice(0, sum_of_pages) })
         }
 
@@ -202,9 +205,9 @@ const num = async (req, res) => {
             
             
             `, pages_arr);
+
             pages_arr = cache.data["pages_first_half"]["v"].concat(pages_arr);
-
-
+            cache.set(`pages_first_half`, pages_arr, 10);
             return res.status(200).json({ "nycombinatorscraped": pages_arr })
 
         } catch (e) {
