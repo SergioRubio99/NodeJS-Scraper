@@ -1,26 +1,27 @@
 const puppeteer = require('puppeteer');
 const jsdom = require("jsdom");
 const NodeCache = require("node-cache");
-const cache = new NodeCache({ stdTTL: 2000000 });
+const cache = new NodeCache({ stdTTL: 10 });
 console.log(cache)
 let pages_arr = [];
 
 const num = async (req, res) => {
 
     let sum_of_pages = req.params.num
-    sum_of_pages === undefined ? sum_of_pages = 1 :
+    sum_of_pages === undefined ? sum_of_pages = 1 : undefined;
 
     console.log("Total of pages to crawl! => ", sum_of_pages);
     console.log(`CACHE =>>>> `, cache.get("page"));
     console.log("FALSE OR TRUE >==>>>", Object.keys(cache.data).length === 0);
-    console.log(Object.keys(cache.data).length);
-    console.log(Object.keys(cache.data).length);
-    console.log(Object.keys(cache.data).length);
+    // console.log(Object.keys(cache.data).length);
+    // console.log(Object.keys(cache.data).length);
+    // console.log(Object.keys(cache.data).length);
 
     //We make the program check whether the cache is filled or not, using a conditional: 
+
     if (Object.keys(cache.data).length === 0) {
 
-        //If the cache is filled, we want the scraper to crawl according to the parameter (sum_of_pages) provided in the request, because we want ALL the pages from the request.
+        //If the cache is empty, we want the scraper to crawl every page needed, store in in the cache and send the JSON response, as usual. Like we did before, withour reading the cache at all.
 
         try {
             for (i = 1; i <= sum_of_pages; ++i) {
@@ -78,19 +79,36 @@ const num = async (req, res) => {
                 // console.log(cache.data.Object.Keys(cache.data))
                 // console.log(Object.keys(cache.data).length)
 
-                
+
                 // console.clear();
             }
             // console.log(pages_arr);
             cache.set(`pages_first_half`, pages_arr, 10);
-       
             console.log("cached arr => ", cache.data["pages_first_half"]["v"])
             res.status(200).json({ "nycombinatorscraped": pages_arr })
 
         } catch (e) {
             console.log(e)
         }
-    }else{
+    } else {
+        //What if the cache is not empty? In this case, there are two possibilites: the user wants a page beyond the pages cached, or the user wants pages included in the cache pages range. For instance: the cache has until the 4th page, and the user requests until the 6th page, or maybe the user requests until the 3rd page (in this case, no crawling is needed, since every page requested is into the cache).
+
+        console.log(sum_of_pages)
+        console.log(cache.data["pages_first_half"]["v"].length)
+
+        // If the pages requested are the same that you can find in the cache (URL /X == cache.data.length):
+
+        if (cache.data["pages_first_half"]["v"].length == sum_of_pages) {
+            console.log("THE CLIENT REQUESTED THE SAME AMOUNT OF PAGES THAT ARE CACHED ALREADY")
+            return res.status(200).json({ "nycombinatorscraped": cache.data["pages_first_half"]["v"] })
+        }
+
+        // If the pages requested are the less than those you can find in the cache (URL /X < cache.data.length):
+
+        if (sum_of_pages < cache.data["pages_first_half"]["v"].length) {
+            console.log("THE CLIENT REQUESTED LESS PAGES THAT THOSE CACHED ALREADY");
+            return res.status(200).json({ "nycombinatorscraped": cache.data["pages_first_half"]["v"].slice(0, sum_of_pages)})
+        }
 
     }
 
