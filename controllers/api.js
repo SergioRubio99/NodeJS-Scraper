@@ -39,7 +39,6 @@ const num = async (req, res) => {
                 const page = await browser.newPage();
                 const response = await page.goto(`https://news.ycombinator.com/?p=${i}`);
                 const body = await response.text();
-
                 // We set up an instance of the puppeteer result (body), to parse it with the help of JSDOM  
 
                 const { window: { document } } = new jsdom.JSDOM(body);
