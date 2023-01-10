@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 const jsdom = require("jsdom");
 const NodeCache = require("node-cache");
 //We set a basic cache with 10s of duration
-const cache = new NodeCache({ stdTTL: 10 });
+const cache = new NodeCache({ stdTTL: 3 });
 console.log(cache)
 let pages_arr = [];
 
@@ -24,9 +24,7 @@ const num = async (req, res) => {
     //We check whether the cache is filled or not, and if the pages requested are more than those you can find in the cache (URL /X > cache.data.length):
     
     if (Object.keys(cache.data).length === 0) {
-
-        //If the cache is empty, we want the scraper to crawl every page needed, store it in in the cache and send the JSON response, as usual. Like we did before, without reading the cache at all:
-
+        console.log("CACHE IS EMPTY/////////////////////////////")        //If the cache is empty, we want the scraper to crawl every page needed, store it in in the cache and send the JSON response, as usual. Like we did before, without reading the cache at all:
         try {
 
             //This for loop is dedicated to scrape a page, nothing else:
@@ -54,19 +52,28 @@ const num = async (req, res) => {
 
                 newArrObj[newArrObjNameString] = [];
 
+                // The function to get URLs:
 
-                // We declare the function we will use later to fill the array:
-
-                let getTitlesFunction = function (element) {
-                    let obj = Object.values(newArrObj)[0]
-                    obj.push({ "article": element.textContent })
+                let getURLFunction = function (element) {
+                    console.log(element.href)
+                    return element.href
                 }
 
-                
+                let buildArticle = function (element) {
+                  let obj = Object.values(newArrObj)[0];
+                  let URL = getURLFunction(element, obj);
+                  let Title = element.textContent;
+                  obj.push({ Title, URL });
+                };
+
+               
                 // I transit the DOM as in any frontend app, using the DOM API methods, and with the use of the Array.prototype.forEach() method, I execute the function on every HTML tag containing an article description. There, with the use of element.textContent I extract the text to fill the array. Every article's description will be inside its own object.
 
-                document.querySelectorAll('tr > td > span[class="titleline"] > a').forEach(getTitlesFunction);
+                document.querySelectorAll('span[class="titleline"] > a').forEach(buildArticle);
                 pages_arr.push(newArrObj)
+         
+
+
 
 
                 //This last line of code makes the crawler stop if it's taking no more information! This is useful if, for instance, the user inputs in the URL a number superior to the number of pages available in the website. It makes the loop stop (making "i" reach whatever number is sum_of_pages), and deletes with ( Array.prototype.pop() ) the last element of the pages_array (that will come empty, obviously): 
@@ -107,7 +114,7 @@ const num = async (req, res) => {
             // console.log(pages_arr);
             cache.set(`pages_first_half`, pages_arr, 10);
             console.log("cached arr => ", cache.data["pages_first_half"]["v"])
-            return res.status(200).json({ "nycombinatorscraped": pages_arr })
+            return res.status(200).json({ "NY Combinator Scraped => ": pages_arr })
 
         } catch (e) {
             console.log(e);
@@ -127,7 +134,7 @@ const num = async (req, res) => {
 
         if (cache.data["pages_first_half"]["v"].length == sum_of_pages) {
             console.log("THE CLIENT REQUESTED THE SAME AMOUNT OF PAGES THAT ARE CACHED ALREADY")
-            cache.set(`pages_first_half`, cache.data["pages_first_half"]["v"], 10);
+            cache.set(`pages_first_half`, cache.data["pages_first_half"]["v"], 4);
 
             return res.status(200).json({ "nycombinatorscraped": cache.data["pages_first_half"]["v"] })
         }
@@ -153,7 +160,7 @@ const num = async (req, res) => {
             for (i = (cache.data["pages_first_half"]["v"].length+1); i <= sum_of_pages; ++i) {
 
   //Here, we scrape exactly the same way we did it when the cache is empty, and we have to scrape all the pages requested by the user. With the difference that now the loop starts iterating just after the last page available in the cache (if 4 pages are available inside the cache, the loop will start in the number 5). Doing this, we avoid scraping uselessly pages already scraped.
-  
+
 
                 const browser = await puppeteer.launch();
                 const page = await browser.newPage();
@@ -162,18 +169,18 @@ const num = async (req, res) => {
 
                 const { window: { document } } = new jsdom.JSDOM(body);
                 newArrObjNameString = `page ${i}`;
-             
+
                 let newArrObj = {}
                 newArrObj[newArrObjNameString] = [];
-        
 
-                let getTitlesFunction = function (element) {
+
+                let buildArticle = function (element) {
                     let obj = Object.values(newArrObj)[0]
                     obj.push({ "article": element.textContent })
                 }
-        
 
-                document.querySelectorAll('tr > td > span[class="titleline"] > a').forEach(getTitlesFunction);
+
+                document.querySelectorAll('span[class="titleline"] > a').forEach(buildArticle);
                 pages_arr.push(newArrObj)
 
                 if (Object.values(newArrObj)[0].length === 0) {
@@ -213,8 +220,9 @@ const num = async (req, res) => {
             
             `, pages_arr);
 
-            pages_arr = cache.data["pages_first_half"]["v"].concat(pages_arr);
-            cache.set(`pages_first_half`, pages_arr, 10);
+            // pages_arr = cache.data["pages_first_half"]["v"].concat(pages_arr);
+            pages_arr = pages_arr;
+            // cache.set(`pages_first_half`, pages_arr, 10);
             return res.status(200).json({ "nycombinatorscraped": pages_arr })
 
         } catch (e) {
