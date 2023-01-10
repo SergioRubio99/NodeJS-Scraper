@@ -48,7 +48,8 @@ const num = async (req, res) => {
                 //I will use Object.values() method to iterate over the newArrObj as if it was an array, and then access the array inside. I need to do this, because if not, I cannot asign the variable names dinamically ("page 1", "page 2", etc), with a space in each object key. 
 
                 let newArrObj = {}
-                //we create the "page X" entry inside the object: 
+
+                //We create the "page X" entry inside the object: 
 
                 newArrObj[newArrObjNameString] = [];
 
@@ -81,6 +82,9 @@ const num = async (req, res) => {
                   }
                 };
 
+                // The function to get the users associated to every article:
+
+
                 let getUser = function (element) {
                   if (!element.querySelectorAll(".subline>.hnuser")[0]) {
                     console.log("HTML ELEMENT USER ====> NO USER!");
@@ -90,7 +94,24 @@ const num = async (req, res) => {
                     "HTML ELEMENT USER ====> ",
                     element.querySelectorAll(".subline>.hnuser")[0].textContent
                   );
-                    return element.querySelectorAll(".subline>.hnuser")[0].textContent
+                    return element.querySelectorAll(".subline> .hnuser")[0].textContent
+                };
+
+                // The function to get the age of each article:
+
+                let getAge = function (element) {
+                  if (!element.querySelectorAll(".subline> .age")[0]) {
+                    // In some articles, the AGE is located under the a different selector:
+                    
+                    let creationDate = element.querySelectorAll(".subtext > .age > a")[0].textContent
+                    return creationDate; //
+                  }
+                  let creationDate = element.querySelectorAll(".subline> .age")[0].textContent;
+                  console.log(
+                    "HTML ELEMANT AGE == ==> ",
+                    element.querySelectorAll(".subline> .age")[0].textContent
+                  );
+                  return creationDate;
                 };
 
                 let buildUpperArticle = function (element) {
@@ -103,8 +124,9 @@ const num = async (req, res) => {
                 let buildLowerArticle = function (element) {
                     let points = getPoints(element)
                     let user = getUser(element);
+                    let creationDate = getAge(element);
                     let obj = Object.values(newArrObj)[0];
-                    obj.push({ points: points, user}); 
+                    obj.push({ points: points, user, creationDate}); 
                 }
 
                 // I transit the DOM as in any frontend app, using the DOM API methods, and with the use of the Array.prototype.forEach() method, I execute the function on every HTML tag containing an article description. There, with the use of element.textContent I extract the text to fill the array. Every article's description will be inside its own object.
