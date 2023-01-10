@@ -54,22 +54,63 @@ const num = async (req, res) => {
 
                 // The function to get URLs:
 
-                let getURLFunction = function (element) {
-                    console.log(element.href)
+                let getURL = (element) => {
                     return element.href
                 }
 
-                let buildArticle = function (element) {
-                  let obj = Object.values(newArrObj)[0];
-                  let URL = getURLFunction(element, obj);
-                  let Title = element.textContent;
-                  obj.push({ Title, URL });
+                // The function to get the points of each article:
+
+                let getPoints = (element) => {
+              
+                  //We take the element received , which is a HTMLSpanElement {}. Then convert it to a Nodelist via querySelectorAll(). After that, we can substract the points.
+
+                  //We use an if statement, because some articles don't have anything under .subline > .score We can't point to textContent if its father element may come empty!
+
+                  if (!element.querySelectorAll(".subline>.score")[0]) {
+                    console.log("HTML ELEMENT POINTS ====> NO POINTS!");
+                    return 0; // In case we can't find any .score element, 0 points will be attributed to the article. 
+                  } else {
+                    console.log(
+                      "HTML ELEMENT POINTS ====> ",
+                      element.querySelectorAll(".subline>.score")[0].textContent
+                    );
+                    points_number = element
+                      .querySelectorAll(".subline>.score")[0] //We take the HTML element.
+                      .textContent.replace(/[^0-999]/g, ""); // We take the String inside it and discard any no numerical character
+                    return parseInt(points_number); // We send it back to the buildLowerArticle()
+                  }
                 };
 
-               
+                let getUser = function (element) {
+                  if (!element.querySelectorAll(".subline>.hnuser")[0]) {
+                    console.log("HTML ELEMENT USER ====> NO USER!");
+                    return "none"; // In case we can't find any .score element, 0 points will be attributed to the article.
+                  }
+                  console.log(
+                    "HTML ELEMENT USER ====> ",
+                    element.querySelectorAll(".subline>.hnuser")[0].textContent
+                  );
+                    return element.querySelectorAll(".subline>.hnuser")[0].textContent
+                };
+
+                let buildUpperArticle = function (element) {
+                    let title = element.textContent;
+                    let url = getURL(element);
+                    let obj = Object.values(newArrObj)[0];
+                    obj.push({ title, url });
+                };
+
+                let buildLowerArticle = function (element) {
+                    let points = getPoints(element)
+                    let user = getUser(element);
+                    let obj = Object.values(newArrObj)[0];
+                    obj.push({ points: points, user}); 
+                }
+
                 // I transit the DOM as in any frontend app, using the DOM API methods, and with the use of the Array.prototype.forEach() method, I execute the function on every HTML tag containing an article description. There, with the use of element.textContent I extract the text to fill the array. Every article's description will be inside its own object.
 
-                document.querySelectorAll('span[class="titleline"] > a').forEach(buildArticle);
+                document.querySelectorAll('span[class="titleline"] > a').forEach(buildUpperArticle);
+                document.querySelectorAll('.subtext').forEach(buildLowerArticle);
                 pages_arr.push(newArrObj)
          
 
@@ -92,7 +133,7 @@ const num = async (req, res) => {
                     
                     `, newArrObj, `
                     
-                    Page here! ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️
+                    Page ${i} here! ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️
                     
                     `)
 
