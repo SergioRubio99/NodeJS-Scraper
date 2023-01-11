@@ -107,8 +107,7 @@ const num = async (req, res) => {
                   if (!element.querySelectorAll(".subline> .age")[0]) {
                     // In some articles, the AGE is located under the a different selector:
                     
-                    let creationDate = element.querySelectorAll(".subtext > .age > a")[0].textContent
-                    return creationDate; //
+                    return "unknown"; //
                   }
                   let creationDate = element.querySelectorAll(".subline> .age")[0].textContent;
                   // console.log(
@@ -120,7 +119,7 @@ const num = async (req, res) => {
 
                 let getComments = function (element) {
                   if(!element.querySelectorAll(".subline > a:nth-child(6)")[0]){
-                    return "none" 
+                    return "none";
                   }
                   // document.querySelectorAll('.subtext').forEach(e => console.log( e.querySelectorAll(".subline > a:nth-child(6)"))) 
                   // console.log("HI FROM THE GETCOMMENTS FUNCTION => ", element.querySelectorAll(".subline > a:nth-child(6)")[0].textContent);
@@ -155,7 +154,6 @@ const num = async (req, res) => {
                   // console.log(firstHalf);
                   // console.log(secondHalf);
                   newArrObj[newArrObjNameString] = []
-                  let arr = []
                   for (x = 0; x < crawledArr.length / 2; x++) {
                     let obj = {
                       ...firstHalf[x],
@@ -165,12 +163,14 @@ const num = async (req, res) => {
                   }
                   return newArrObj[newArrObjNameString]
                 }
-                // I transit the DOM as in any frontend app, using the DOM API methods, and with the use of the Array.prototype.forEach() method, I execute the function on every HTML tag containing an article description. There, with the use of element.textContent I extract the text to fill the array. Every article's description will be inside its own object.
+                // I transit the DOM as in any frontend app, using the DOM API methods, and scrape the articles taking into account the two blocks that divide them. For each block, I execute a function with more functions that obtain each single field (they "break down" the block, so to say).
 
                 document.querySelectorAll('span[class="titleline"] > a').forEach(buildUpperArticle);
                 document.querySelectorAll('.subtext').forEach(buildLowerArticle);
                 completeArticle();
               
+                //We insert the page:
+                
                 pages_arr.push(newArrObj)
          
                 //This last line of code makes the crawler stop if it's taking no more information! This is useful if, for instance, the user inputs in the URL a number superior to the number of pages available in the website. It makes the loop stop (making "i" reach whatever number is sum_of_pages), and deletes with ( Array.prototype.pop() ) the last element of the pages_array (that will come empty, obviously): 
