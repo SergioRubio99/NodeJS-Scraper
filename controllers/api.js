@@ -87,14 +87,14 @@ const num = async (req, res) => {
 
                 let getUser = function (element) {
                   if (!element.querySelectorAll(".subline>.hnuser")[0]) {
-                    console.log("HTML ELEMENT USER ====> NO USER!");
+                    // console.log("HTML ELEMENT USER ====> NO USER!");
                     return "none"; // In case we can't find any .score element, 0 points will be attributed to the article.
                   }
-                  console.log(
-                    "HTML ELEMENT USER ====> ",
-                    element.querySelectorAll(".subline>.hnuser")[0].textContent
-                  );
-                    return element.querySelectorAll(".subline> .hnuser")[0].textContent
+                  // console.log(
+                  //   "HTML ELEMENT USER ====> ",
+                  //   element.querySelectorAll(".subline>.hnuser")[0].textContent
+                  // );
+                  //   return element.querySelectorAll(".subline> .hnuser")[0].textContent
                 };
 
                 // The function to get the age of each article:
@@ -107,12 +107,21 @@ const num = async (req, res) => {
                     return creationDate; //
                   }
                   let creationDate = element.querySelectorAll(".subline> .age")[0].textContent;
-                  console.log(
-                    "HTML ELEMANT AGE == ==> ",
-                    element.querySelectorAll(".subline> .age")[0].textContent
-                  );
+                  // console.log(
+                  //   "HTML ELEMANT AGE == ==> ",
+                  //   element.querySelectorAll(".subline> .age")[0].textContent
+                  // );
                   return creationDate;
                 };
+
+                let getComments = function (element) {
+                  if(!element.querySelectorAll(".subline > a:nth-child(6)")[0]){
+                    return "none" 
+                  }
+                  // document.querySelectorAll('.subtext').forEach(e => console.log( e.querySelectorAll(".subline > a:nth-child(6)"))) 
+                  // console.log("HI FROM THE GETCOMMENTS FUNCTION => ", element.querySelectorAll(".subline > a:nth-child(6)")[0].textContent);
+                  return element.querySelectorAll(".subline > a:nth-child(6)")[0].textContent;
+                }
 
                 let buildUpperArticle = function (element) {
                     let title = element.textContent;
@@ -125,14 +134,39 @@ const num = async (req, res) => {
                     let points = getPoints(element)
                     let user = getUser(element);
                     let creationDate = getAge(element);
+                    let comments = getComments(element)
                     let obj = Object.values(newArrObj)[0];
-                    obj.push({ points: points, user, creationDate}); 
+                    obj.push({ points: points, user, creationDate, comments}); 
                 }
 
+                let completeArticle = function () {
+                  let crawledArr = Object.values(newArrObj)[0]
+                  //Now, we have two separate arrays: one containing title and url, and another one containing points, user, creationDate and comments. 
+                  //Here you can see how the elements are pun inside them both:
+                  
+                  let firstHalf = crawledArr.slice(0, crawledArr.length/2);
+                  //I divide between 2 because every article has been crawled twice to get the different fields. This was necessary due to the HTML structure, where there is an upper block and a lower block dividing each article:
+
+                  let secondHalf = crawledArr.slice(crawledArr.length/2,crawledArr.length);
+                  // console.log(firstHalf);
+                  // console.log(secondHalf);
+                  newArrObj[newArrObjNameString] = []
+                  let arr = []
+                  for (x = 0; x < crawledArr.length / 2; x++) {
+                    let obj = {
+                      ...firstHalf[x],
+                      ...secondHalf[x],
+                    };
+                    newArrObj[newArrObjNameString].push(obj);
+                  }
+                  return newArrObj[newArrObjNameString]
+                }
                 // I transit the DOM as in any frontend app, using the DOM API methods, and with the use of the Array.prototype.forEach() method, I execute the function on every HTML tag containing an article description. There, with the use of element.textContent I extract the text to fill the array. Every article's description will be inside its own object.
 
                 document.querySelectorAll('span[class="titleline"] > a').forEach(buildUpperArticle);
                 document.querySelectorAll('.subtext').forEach(buildLowerArticle);
+                completeArticle();
+              
                 pages_arr.push(newArrObj)
          
 
@@ -213,81 +247,197 @@ const num = async (req, res) => {
     }
 
     if(sum_of_pages > Object.values(cache.data).length){
-        pages_arr = []
         console.log("THE CLIENT REQUESTED MORE PAGES THAT THOSE CACHED ALREADY");
         console.log(pages_arr);
     
         // return res.status(200).json({ "nycombinatorscraped": cache.data["pages_first_half"]["v"].slice(0, sum_of_pages) })
 
         try {
-            for (i = (cache.data["pages_first_half"]["v"].length+1); i <= sum_of_pages; ++i) {
+             //This for loop is dedicated to scrape a page, nothing else:
 
-  //Here, we scrape exactly the same way we did it when the cache is empty, and we have to scrape all the pages requested by the user. With the difference that now the loop starts iterating just after the last page available in the cache (if 4 pages are available inside the cache, the loop will start in the number 5). Doing this, we avoid scraping uselessly pages already scraped.
+             for (i = (cache.data["pages_first_half"]["v"].length+1); i <= sum_of_pages; ++i) {
 
+                //If I put the browser variable declaration here, lifting a puppeteer instance everytime I iterate, a new browser will be set up to crawl every single page, separately! So no page will be left behind in the process of scraping. Before this, with the browser constant declared outside the function's scope, I couldn't scrape more than 7 pages without randomly leaving some of them behind.
 
                 const browser = await puppeteer.launch();
                 const page = await browser.newPage();
                 const response = await page.goto(`https://news.ycombinator.com/?p=${i}`);
                 const body = await response.text();
+                // We set up an instance of the puppeteer result (body), to parse it with the help of JSDOM  
 
                 const { window: { document } } = new jsdom.JSDOM(body);
+
+                //DYNAMIC CREATION OF THE OBJECT, ITS OBJECT KEYS, AND THE CONTENT INSIDE:
+
                 newArrObjNameString = `page ${i}`;
 
+                //I will use Object.values() method to iterate over the newArrObj as if it was an array, and then access the array inside. I need to do this, because if not, I cannot asign the variable names dinamically ("page 1", "page 2", etc), with a space in each object key. 
+
                 let newArrObj = {}
+
+                //We create the "page X" entry inside the object: 
+
                 newArrObj[newArrObjNameString] = [];
 
+                // The function to get URLs:
 
-                let buildArticle = function (element) {
-                    let obj = Object.values(newArrObj)[0]
-                    obj.push({ "article": element.textContent })
+                let getURL = (element) => {
+                    return element.href
                 }
 
+                // The function to get the points of each article:
 
-                document.querySelectorAll('span[class="titleline"] > a').forEach(buildArticle);
+                let getPoints = (element) => {
+              
+                  //We take the element received , which is a HTMLSpanElement {}. Then convert it to a Nodelist via querySelectorAll(). After that, we can substract the points.
+
+                  //We use an if statement, because some articles don't have anything under .subline > .score We can't point to textContent if its father element may come empty!
+
+                  if (!element.querySelectorAll(".subline>.score")[0]) {
+                    console.log("HTML ELEMENT POINTS ====> NO POINTS!");
+                    return 0; // In case we can't find any .score element, 0 points will be attributed to the article. 
+                  } else {
+                    console.log(
+                      "HTML ELEMENT POINTS ====> ",
+                      element.querySelectorAll(".subline>.score")[0].textContent
+                    );
+                    points_number = element
+                      .querySelectorAll(".subline>.score")[0] //We take the HTML element.
+                      .textContent.replace(/[^0-999]/g, ""); // We take the String inside it and discard any no numerical character
+                    return parseInt(points_number); // We send it back to the buildLowerArticle()
+                  }
+                };
+
+                // The function to get the users associated to every article:
+
+
+                let getUser = function (element) {
+                  if (!element.querySelectorAll(".subline>.hnuser")[0]) {
+                    // console.log("HTML ELEMENT USER ====> NO USER!");
+                    return "none"; // In case we can't find any .score element, 0 points will be attributed to the article.
+                  }
+                  // console.log(
+                  //   "HTML ELEMENT USER ====> ",
+                  //   element.querySelectorAll(".subline>.hnuser")[0].textContent
+                  // );
+                  //   return element.querySelectorAll(".subline> .hnuser")[0].textContent
+                };
+
+                // The function to get the age of each article:
+
+                let getAge = function (element) {
+                  if (!element.querySelectorAll(".subline> .age")[0]) {
+                    // In some articles, the AGE is located under the a different selector:
+                    
+                    let creationDate = element.querySelectorAll(".subtext > .age > a")[0].textContent
+                    return creationDate; //
+                  }
+                  let creationDate = element.querySelectorAll(".subline> .age")[0].textContent;
+                  // console.log(
+                  //   "HTML ELEMANT AGE == ==> ",
+                  //   element.querySelectorAll(".subline> .age")[0].textContent
+                  // );
+                  return creationDate;
+                };
+
+                let getComments = function (element) {
+                  if(!element.querySelectorAll(".subline > a:nth-child(6)")[0]){
+                    return "none" 
+                  }
+                  // document.querySelectorAll('.subtext').forEach(e => console.log( e.querySelectorAll(".subline > a:nth-child(6)"))) 
+                  // console.log("HI FROM THE GETCOMMENTS FUNCTION => ", element.querySelectorAll(".subline > a:nth-child(6)")[0].textContent);
+                  return element.querySelectorAll(".subline > a:nth-child(6)")[0].textContent;
+                }
+
+                let buildUpperArticle = function (element) {
+                    let title = element.textContent;
+                    let url = getURL(element);
+                    let obj = Object.values(newArrObj)[0];
+                    obj.push({ title, url });
+                };
+
+                let buildLowerArticle = function (element) {
+                    let points = getPoints(element)
+                    let user = getUser(element);
+                    let creationDate = getAge(element);
+                    let comments = getComments(element)
+                    let obj = Object.values(newArrObj)[0];
+                    obj.push({ points: points, user, creationDate, comments}); 
+                }
+
+                let completeArticle = function () {
+                  let crawledArr = Object.values(newArrObj)[0]
+                  //Now, we have two separate arrays: one containing title and url, and another one containing points, user, creationDate and comments. 
+                  //Here you can see how the elements are pun inside them both:
+                  
+                  let firstHalf = crawledArr.slice(0, crawledArr.length/2);
+                  //I divide between 2 because every article has been crawled twice to get the different fields. This was necessary due to the HTML structure, where there is an upper block and a lower block dividing each article:
+
+                  let secondHalf = crawledArr.slice(crawledArr.length/2,crawledArr.length);
+                  // console.log(firstHalf);
+                  // console.log(secondHalf);
+                  newArrObj[newArrObjNameString] = []
+                  let arr = []
+                  for (x = 0; x < crawledArr.length / 2; x++) {
+                    let obj = {
+                      ...firstHalf[x],
+                      ...secondHalf[x],
+                    };
+                    newArrObj[newArrObjNameString].push(obj);
+                  }
+                  return newArrObj[newArrObjNameString]
+                }
+                // I transit the DOM as in any frontend app, using the DOM API methods, and with the use of the Array.prototype.forEach() method, I execute the function on every HTML tag containing an article description. There, with the use of element.textContent I extract the text to fill the array. Every article's description will be inside its own object.
+
+                document.querySelectorAll('span[class="titleline"] > a').forEach(buildUpperArticle);
+                document.querySelectorAll('.subtext').forEach(buildLowerArticle);
+                completeArticle();
+              
                 pages_arr.push(newArrObj)
+         
 
+
+
+
+                //This last line of code makes the crawler stop if it's taking no more information! This is useful if, for instance, the user inputs in the URL a number superior to the number of pages available in the website. It makes the loop stop (making "i" reach whatever number is sum_of_pages), and deletes with ( Array.prototype.pop() ) the last element of the pages_array (that will come empty, obviously): 
+                
                 if (Object.values(newArrObj)[0].length === 0) {
-                    //we stop the loop:
+                    //we halt the loop:
                     i = sum_of_pages
                     pages_arr.pop()
                 }
 
+                //This will indicate through the console that the scraper is scraping pages, with content inside (and not experiencing any kind of error or obstacle): 
+                
                 console.log(`
                     
                     A new page has been crawled!  👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇
                     
                     `, newArrObj, `
                     
-                    Page here! ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️
+                    Page ${i} here! ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️ ☝️
                     
                     `)
-              
+
+                // We close the browser instance:
+                
                 await browser.close();
-            
+                
+                //     console.log(`CACHE PAGE 1=>>>> 
+
+                // `, cache.get("page 1"));
+                
                 console.log(cache.data)
 
                 // console.log(cache.data.Object.Keys(cache.data))
                 // console.log(Object.keys(cache.data).length)
+
+                // console.clear();
             }
-            console.log(`cached arr => 
-            
-            
-            
-            `, cache.data["pages_first_half"]["v"]);
-            
-            
-            console.log(`crawled arr => 
-            
-            
-            
-            
-            `, pages_arr);
-
-            // pages_arr = cache.data["pages_first_half"]["v"].concat(pages_arr);
-            pages_arr = pages_arr;
-            // cache.set(`pages_first_half`, pages_arr, 10);
-            return res.status(200).json({ "nycombinatorscraped": pages_arr })
-
+            // console.log(pages_arr);
+            cache.set(`pages_first_half`, pages_arr, 10);
+            console.log("cached arr => ", cache.data["pages_first_half"]["v"])
+            return res.status(200).json({ "NY Combinator Scraped => ": pages_arr })
         } catch (e) {
             console.log(e)
         }
