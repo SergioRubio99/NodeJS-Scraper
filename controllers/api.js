@@ -21,13 +21,13 @@ const num = async (req, res) => {
     // console.log(Object.keys(cache.data).length);
     // console.log("EEEE, ", Object.values(cache.data).length === 0)
     
-    //We check whether the cache is filled or not, and if the pages requested are more than those you can find in the cache (URL /X > cache.data.length):
+    //We check whether the cache is filled or not, and if the pages requested are more than those you can find in the cache (if URL /X > cache.data.length):
     
     if (Object.keys(cache.data).length === 0) {
         console.log("CACHE IS EMPTY/////////////////////////////")        //If the cache is empty, we want the scraper to crawl every page needed, store it in in the cache and send the JSON response, as usual. Like we did before, without reading the cache at all:
         try {
 
-            //This for loop is dedicated to scrape a page, nothing else:
+            //This for loop is dedicated to scrape a page and cache it, nothing else:
 
             for (i = 1; i <= sum_of_pages; ++i) {
 
@@ -37,7 +37,7 @@ const num = async (req, res) => {
                 const page = await browser.newPage();
                 const response = await page.goto(`https://news.ycombinator.com/?p=${i}`);
                 const body = await response.text();
-                // We set up an instance of the puppeteer result (body), to parse it with the help of JSDOM  
+                // We set up an instance of the puppeteer result (body), to parse it with the help of JSDOM  (because response.text() delivers us the HTML as plain text)
 
                 const { window: { document } } = new jsdom.JSDOM(body);
 
@@ -45,13 +45,17 @@ const num = async (req, res) => {
 
                 newArrObjNameString = `page ${i}`;
 
-                //I will use Object.values() method to iterate over the newArrObj as if it was an array, and then access the array inside. I need to do this, because if not, I cannot asign the variable names dinamically ("page 1", "page 2", etc), with a space in each object key. 
+
+                //We declare the object that will contain the page we're set on:
 
                 let newArrObj = {}
 
                 //We create the "page X" entry inside the object: 
 
                 newArrObj[newArrObjNameString] = [];
+
+
+                // FIELD OBTAINING FUNCTIONS;
 
                 // The function to get URLs:
 
@@ -71,14 +75,14 @@ const num = async (req, res) => {
                     console.log("HTML ELEMENT POINTS ====> NO POINTS!");
                     return 0; // In case we can't find any .score element, 0 points will be attributed to the article. 
                   } else {
-                    console.log(
-                      "HTML ELEMENT POINTS ====> ",
-                      element.querySelectorAll(".subline>.score")[0].textContent
-                    );
+                    // console.log(
+                    //   "HTML ELEMENT POINTS ====> ",
+                    //   element.querySelectorAll(".subline>.score")[0].textContent
+                    // );
                     points_number = element
                       .querySelectorAll(".subline>.score")[0] //We take the HTML element.
                       .textContent.replace(/[^0-999]/g, ""); // We take the String inside it and discard any no numerical character
-                    return parseInt(points_number); // We send it back to the buildLowerArticle()
+                    return parseInt(points_number); // We send it back to  buildLowerArticle()
                   }
                 };
 
@@ -94,7 +98,7 @@ const num = async (req, res) => {
                   //   "HTML ELEMENT USER ====> ",
                   //   element.querySelectorAll(".subline>.hnuser")[0].textContent
                   // );
-                  //   return element.querySelectorAll(".subline> .hnuser")[0].textContent
+                    return element.querySelectorAll(".subline> .hnuser")[0].textContent
                 };
 
                 // The function to get the age of each article:
@@ -169,10 +173,6 @@ const num = async (req, res) => {
               
                 pages_arr.push(newArrObj)
          
-
-
-
-
                 //This last line of code makes the crawler stop if it's taking no more information! This is useful if, for instance, the user inputs in the URL a number superior to the number of pages available in the website. It makes the loop stop (making "i" reach whatever number is sum_of_pages), and deletes with ( Array.prototype.pop() ) the last element of the pages_array (that will come empty, obviously): 
                 
                 if (Object.values(newArrObj)[0].length === 0) {
@@ -209,6 +209,9 @@ const num = async (req, res) => {
                 // console.clear();
             }
             // console.log(pages_arr);
+
+            //We set the cache for the next possible request.
+
             cache.set(`pages_first_half`, pages_arr, 10);
             console.log("cached arr => ", cache.data["pages_first_half"]["v"])
             return res.status(200).json({ "NY Combinator Scraped => ": pages_arr })
