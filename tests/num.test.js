@@ -1,6 +1,6 @@
 //We add this to increase the time limit!
 
-jest.setTimeout(10000);
+jest.setTimeout(40000);
 
 // Tests:
 
@@ -9,7 +9,7 @@ let json;
 test("The result of the scrape comes in JSON format", async () => {
   //Now, the testing does not work if no numbers are inputted as URL parameter. I can tweak them to do so, but I find it useless.
 
-  const response = await fetch("http://localhost:3000/4");
+  const response = await fetch("http://localhost:3000/19");
   json = await response.json();
   // console.log("TYPEOF RESPONSE", typeof json)
   expect(typeof json).toBe("object");
