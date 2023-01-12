@@ -27,7 +27,7 @@ test("Inside the object, there is an array with data inside",
         // const json = await response.json()
         // console.log(`JSON ARR CHECK =>>>
 
-        // `, Array.isArray(json.nycombinatorscraped))
+        // `, json)
         expect(Array.isArray(json.nycombinatorscraped)).toBe(true)
         expect(json.nycombinatorscraped.length).toBeGreaterThan(0)
     }

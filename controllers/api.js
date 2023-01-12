@@ -217,7 +217,7 @@ const num = async (req, res) => {
 
             cache.set(`pages_first_half`, pages_arr, 10);
             console.log("cached arr => ", cache.data["pages_first_half"]["v"])
-            return res.status(200).json({ "NY Combinator Scraped => ": pages_arr })
+            return res.status(200).json({ "nycombinatorscraped": pages_arr })
 
         } catch (e) {
             console.log(e);
