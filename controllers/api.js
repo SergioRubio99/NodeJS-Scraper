@@ -116,13 +116,13 @@ const num = async (req, res) => {
         };
 
         let getComments = function (element) {
+          console.log("GETCOMMENTS => ", element.querySelectorAll(".subline > a:nth-child(6)")[0])
           if (!element.querySelectorAll(".subline > a:nth-child(6)")[0]) {
-            return "none";
+            return "no comments";
           }
           // document.querySelectorAll('.subtext').forEach(e => console.log( e.querySelectorAll(".subline > a:nth-child(6)")))
           // console.log("HI FROM THE GETCOMMENTS FUNCTION => ", element.querySelectorAll(".subline > a:nth-child(6)")[0].textContent);
-          return element.querySelectorAll(".subline > a:nth-child(6)")[0]
-            .textContent;
+          return element.querySelectorAll(".subline > a:nth-child(6)")[0].textContent;
         };
 
         let buildUpperArticle = function (element) {
