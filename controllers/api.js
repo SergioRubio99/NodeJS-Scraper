@@ -371,6 +371,13 @@ const num = async (req, res) => {
           if (!element.querySelectorAll(".subline > a:nth-child(6)")[0]) {
             return "none";
           }
+
+          //Sometimes, the HTML element that use to contain comments, has "discuss" in it. We don't want that: 
+          
+          if(element.querySelectorAll(".subline > a:nth-child(6)")[0]
+          .textContent == "discuss"){
+            return "none";
+          }
           // document.querySelectorAll('.subtext').forEach(e => console.log( e.querySelectorAll(".subline > a:nth-child(6)")))
           // console.log("HI FROM THE GETCOMMENTS FUNCTION => ", element.querySelectorAll(".subline > a:nth-child(6)")[0].textContent);
           return element.querySelectorAll(".subline > a:nth-child(6)")[0]
