@@ -1,6 +1,6 @@
 //We add this to increase the time limit!
 
-jest.setTimeout(60000);
+jest.setTimeout(10000);
 
 // Tests:
 
@@ -112,17 +112,4 @@ test("Check fields: title, url, points, user, creationDate, comments", () => {
     });
   }
 });
-
-// Object.values(arr[i]).forEach((page_arr) => {
-
-//     // We use "<" instead of "<=" because .length starts countin from 1, and the "i" variable needs to be counted from 0, so we can navigate the array index:
-
-//     for (i = 0; i < page_arr.length; i++) {
-//         // console.log("element!!! =>")
-//         // console.log(e[i].article)
-//         expect(typeof page_arr[i].article == "string").toBe(true)
-//         //We want to test that the String is not 0 characters long:
-//         expect(page_arr[i].article.length).toBeGreaterThan(0)
-
-//     }
-// })
+ 
