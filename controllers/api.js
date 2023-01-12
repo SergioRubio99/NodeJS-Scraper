@@ -274,13 +274,11 @@ const num = async (req, res) => {
     // return res.status(200).json({ "nycombinatorscraped": cache.data["pages_first_half"]["v"].slice(0, sum_of_pages) })
 
     try {
-      //This for loop is dedicated to scrape a page, nothing else:
+      //This for loop is dedicated to scrape a page and cache it, nothing else:
 
+      
       for (
-        i = cache.data["pages_first_half"]["v"].length + 1;
-        i <= sum_of_pages;
-        ++i
-      ) {
+        i = cache.data["pages_first_half"]["v"].length + 1;i <= sum_of_pages;++i) {
         //If I put the browser variable declaration here, lifting a puppeteer instance everytime I iterate, a new browser will be set up to crawl every single page, separately! So no page will be left behind in the process of scraping. Before this, with the browser constant declared outside the function's scope, I couldn't scrape more than 7 pages without randomly leaving some of them behind.
 
         const browser = await puppeteer.launch();
@@ -289,7 +287,7 @@ const num = async (req, res) => {
           `https://news.ycombinator.com/?p=${i}`
         );
         const body = await response.text();
-        // We set up an instance of the puppeteer result (body), to parse it with the help of JSDOM
+        // We set up an instance of the puppeteer result (body), to parse it with the help of JSDOM  (because response.text() delivers us the HTML as plain text)
 
         const {
           window: { document },
@@ -299,13 +297,15 @@ const num = async (req, res) => {
 
         newArrObjNameString = `page ${i}`;
 
-        //I will use Object.values() method to iterate over the newArrObj as if it was an array, and then access the array inside. I need to do this, because if not, I cannot asign the variable names dinamically ("page 1", "page 2", etc), with a space in each object key.
+        //We declare the object that will contain the page we're set on:
 
         let newArrObj = {};
 
         //We create the "page X" entry inside the object:
 
         newArrObj[newArrObjNameString] = [];
+
+        // FIELD OBTAINING FUNCTIONS;
 
         // The function to get URLs:
 
@@ -324,14 +324,14 @@ const num = async (req, res) => {
             console.log("HTML ELEMENT POINTS ====> NO POINTS!");
             return 0; // In case we can't find any .score element, 0 points will be attributed to the article.
           } else {
-            console.log(
-              "HTML ELEMENT POINTS ====> ",
-              element.querySelectorAll(".subline>.score")[0].textContent
-            );
+            // console.log(
+            //   "HTML ELEMENT POINTS ====> ",
+            //   element.querySelectorAll(".subline>.score")[0].textContent
+            // );
             points_number = element
               .querySelectorAll(".subline>.score")[0] //We take the HTML element.
               .textContent.replace(/[^0-999]/g, ""); // We take the String inside it and discard any no numerical character
-            return parseInt(points_number); // We send it back to the buildLowerArticle()
+            return parseInt(points_number); // We send it back to  buildLowerArticle()
           }
         };
 
@@ -346,7 +346,7 @@ const num = async (req, res) => {
           //   "HTML ELEMENT USER ====> ",
           //   element.querySelectorAll(".subline>.hnuser")[0].textContent
           // );
-          //   return element.querySelectorAll(".subline> .hnuser")[0].textContent
+          return element.querySelectorAll(".subline> .hnuser")[0].textContent;
         };
 
         // The function to get the age of each article:
@@ -354,8 +354,10 @@ const num = async (req, res) => {
         let getAge = function (element) {
           if (!element.querySelectorAll(".subline> .age")[0]) {
             // In some articles, the AGE is located under the a different selector:
-            if(element.querySelectorAll(".subtext > .age > a")){
-              let creationDate = element.querySelectorAll(".subtext > .age > a")[0].textContent;
+            if (element.querySelectorAll(".subtext > .age > a")) {
+              let creationDate = element.querySelectorAll(
+                ".subtext > .age > a"
+              )[0].textContent;
               return creationDate; //
             }
           }
@@ -369,15 +371,12 @@ const num = async (req, res) => {
         };
 
         let getComments = function (element) {
+          console.log(
+            "GETCOMMENTS => ",
+            element.querySelectorAll(".subline > a:nth-child(6)")[0]
+          );
           if (!element.querySelectorAll(".subline > a:nth-child(6)")[0]) {
-            return "none";
-          }
-
-          //Sometimes, the HTML element that use to contain comments, has "discuss" in it. We don't want that: 
-          
-          if(element.querySelectorAll(".subline > a:nth-child(6)")[0]
-          .textContent == "discuss"){
-            return "none";
+            return "no comments";
           }
           // document.querySelectorAll('.subtext').forEach(e => console.log( e.querySelectorAll(".subline > a:nth-child(6)")))
           // console.log("HI FROM THE GETCOMMENTS FUNCTION => ", element.querySelectorAll(".subline > a:nth-child(6)")[0].textContent);
@@ -407,18 +406,20 @@ const num = async (req, res) => {
           //Here you can see how the elements are pun inside them both:
 
           let firstHalf = crawledArr.slice(0, crawledArr.length / 2);
-          //I divide between 2 because every article has been crawled twice to get the different fields. This was necessary due to the HTML structure, where there is an upper block and a lower block dividing each article:
+          //I divide between 2 because every article has been crawled twice separatedly (the JSDOM file, not the web itself. We only send one online request), to get each different field. This was necessary due to the HTML structure, where there is an upper block and a lower block dividing each article:
 
           let secondHalf = crawledArr.slice(
             crawledArr.length / 2,
             crawledArr.length
           );
+
           // console.log(firstHalf);
           // console.log(secondHalf);
+
           newArrObj[newArrObjNameString] = [];
-          let arr = [];
           for (x = 0; x < crawledArr.length / 2; x++) {
             let obj = {
+              //We sum both sides: upper and lower:
               ...firstHalf[x],
               ...secondHalf[x],
             };
@@ -426,13 +427,15 @@ const num = async (req, res) => {
           }
           return newArrObj[newArrObjNameString];
         };
-        // I transit the DOM as in any frontend app, using the DOM API methods, and with the use of the Array.prototype.forEach() method, I execute the function on every HTML tag containing an article description. There, with the use of element.textContent I extract the text to fill the array. Every article's description will be inside its own object.
+        // I transit the DOM as in any frontend app, using the DOM API methods, and scrape the articles taking into account the two blocks that divide them. For each block, I execute a function with more functions that obtain each single field (they "break down" the block, so to say).
 
         document
           .querySelectorAll('span[class="titleline"] > a')
           .forEach(buildUpperArticle);
         document.querySelectorAll(".subtext").forEach(buildLowerArticle);
         completeArticle();
+
+        //We insert the page:
 
         pages_arr.push(newArrObj);
 
@@ -476,9 +479,12 @@ const num = async (req, res) => {
         // console.clear();
       }
       // console.log(pages_arr);
+
+      //We set the cache for the next possible request.
+
       cache.set(`pages_first_half`, pages_arr);
       console.log("cached arr => ", cache.data["pages_first_half"]["v"]);
-      return res.status(200).json({ "NY Combinator Scraped => ": pages_arr });
+      return res.status(200).json({ nycombinatorscraped: pages_arr });
     } catch (e) {
       console.log(e);
     }
