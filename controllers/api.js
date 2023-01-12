@@ -148,14 +148,17 @@ const num = async (req, res) => {
                   //Here you can see how the elements are pun inside them both:
                   
                   let firstHalf = crawledArr.slice(0, crawledArr.length/2);
-                  //I divide between 2 because every article has been crawled twice to get the different fields. This was necessary due to the HTML structure, where there is an upper block and a lower block dividing each article:
+                  //I divide between 2 because every article has been crawled twice separatedly (the JSDOM file, not the web itself. We only send one online request), to get each different field. This was necessary due to the HTML structure, where there is an upper block and a lower block dividing each article:
 
                   let secondHalf = crawledArr.slice(crawledArr.length/2,crawledArr.length);
+
                   // console.log(firstHalf);
                   // console.log(secondHalf);
+                  
                   newArrObj[newArrObjNameString] = []
                   for (x = 0; x < crawledArr.length / 2; x++) {
                     let obj = {
+                      //We sum both sides: upper and lower:
                       ...firstHalf[x],
                       ...secondHalf[x],
                     };
