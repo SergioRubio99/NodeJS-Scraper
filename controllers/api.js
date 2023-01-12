@@ -1,8 +1,8 @@
 const puppeteer = require("puppeteer");
 const jsdom = require("jsdom");
 const NodeCache = require("node-cache");
-//We set a basic cache with 10s of duration
-const cache = new NodeCache({ stdTTL: 3 });
+//We set a basic cache with 5m of duration
+const cache = new NodeCache({ stdTTL: 300, checkperiod: 1 });
 console.log(cache);
 let pages_arr = [];
 
@@ -223,7 +223,7 @@ const num = async (req, res) => {
 
       //We set the cache for the next possible request.
 
-      cache.set(`pages_first_half`, pages_arr, 10);
+      cache.set(`pages_first_half`, pages_arr);
       console.log("cached arr => ", cache.data["pages_first_half"]["v"]);
       return res.status(200).json({ nycombinatorscraped: pages_arr });
     } catch (e) {
@@ -243,7 +243,6 @@ const num = async (req, res) => {
       console.log(
         "THE CLIENT REQUESTED THE SAME AMOUNT OF PAGES THAT ARE CACHED ALREADY"
       );
-      cache.set(`pages_first_half`, cache.data["pages_first_half"]["v"], 4);
 
       return res
         .status(200)
@@ -469,7 +468,7 @@ const num = async (req, res) => {
         // console.clear();
       }
       // console.log(pages_arr);
-      cache.set(`pages_first_half`, pages_arr, 10);
+      cache.set(`pages_first_half`, pages_arr);
       console.log("cached arr => ", cache.data["pages_first_half"]["v"]);
       return res.status(200).json({ "NY Combinator Scraped => ": pages_arr });
     } catch (e) {
