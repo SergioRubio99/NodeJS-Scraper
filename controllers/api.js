@@ -103,8 +103,10 @@ const num = async (req, res) => {
         let getAge = function (element) {
           if (!element.querySelectorAll(".subline> .age")[0]) {
             // In some articles, the AGE is located under the a different selector:
-
-            return "unknown"; //
+            if(element.querySelectorAll(".subtext > .age > a")){
+              let creationDate = element.querySelectorAll(".subtext > .age > a")[0].textContent;
+              return creationDate; //
+            }
           }
           let creationDate =
             element.querySelectorAll(".subline> .age")[0].textContent;
@@ -352,11 +354,10 @@ const num = async (req, res) => {
         let getAge = function (element) {
           if (!element.querySelectorAll(".subline> .age")[0]) {
             // In some articles, the AGE is located under the a different selector:
-
-            let creationDate = element.querySelectorAll(
-              ".subtext > .age > a"
-            )[0].textContent;
-            return creationDate; //
+            if(element.querySelectorAll(".subtext > .age > a")){
+              let creationDate = element.querySelectorAll(".subtext > .age > a")[0].textContent;
+              return creationDate; //
+            }
           }
           let creationDate =
             element.querySelectorAll(".subline> .age")[0].textContent;
