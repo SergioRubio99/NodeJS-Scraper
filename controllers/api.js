@@ -485,3 +485,4 @@ const num = async (req, res) => {
 };
 
 module.exports = num;
+ 
