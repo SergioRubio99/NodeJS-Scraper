@@ -1,8 +1,7 @@
-let crawler = () => {
-   let pages = req.params.num;
+let crawler = (pages) => {
    pages === undefined ? (pages = 1):undefined;
-   console.log(pages); 
+    console.log("NEe")
 }
 
 
-module.expots = crawler;
+module.exports = crawler;
