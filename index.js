@@ -5,7 +5,7 @@ require('dotenv').config();
 
 app.use("/", api);
 console.clear();
-console.log("Listening, on the 3000 port")
 
 
 app.listen(process.env.PORT);
+console.log("Listening, on the 3000 port")
