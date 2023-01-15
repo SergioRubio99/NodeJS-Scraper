@@ -14,7 +14,11 @@ const crawler = async (pages) => {
   pages === undefined ? (pages = 1) : undefined;
   let page = await axiosInstance.get();
   const { document } = new jsdom.JSDOM(page.data).window;
-  document.querySelectorAll('span[class="titleline"] > a').forEach(buildUpperArticle);
+  let upperArr = []
+  document.querySelectorAll('span[class="titleline"] > a').forEach((e)=> {
+    console.log(buildUpperArticle(e))
+  });
+  console.log(upperArr)
   document.querySelectorAll(".subtext").forEach(buildLowerArticle);
 };
 

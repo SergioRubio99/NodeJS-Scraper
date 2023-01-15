@@ -7,6 +7,5 @@ module.exports = class article {
         this.age = age,
         this.comments = comments
     }
-    
  
 }
