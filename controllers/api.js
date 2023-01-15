@@ -5,7 +5,7 @@ const cache = new NodeCache({ stdTTL: 300, checkperiod: 1 });
 console.log(cache);
 
 module.exports = (req,res) => {
-  crawler(req.params.num)
+  let page = crawler(req.params.num)
   let articles_arr = [];
   return res.status(200).json({ articles_arr });
 }
