@@ -19,7 +19,7 @@ const crawler = async (pages) => {
     console.log(buildUpperArticle(e))
   });
   console.log(upperArr)
-  document.querySelectorAll(".subtext").forEach(buildLowerArticle);
+  document.querySelectorAll(".subtext").forEach(e => console.log(buildLowerArticle(e)));
 };
 
 module.exports = crawler;
