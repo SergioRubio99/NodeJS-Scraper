@@ -1,7 +1,7 @@
 const axios = require("axios");
 const jsdom = require("jsdom");
-const buildUpperArticle = require("./scrape_article_functions/buildUpperArticle");
-const buildLowerArticle = require("./scrape_article_functions/buildLowerArticle");
+const buildUpperArticle = require("./article_functions/buildUpperArticle");
+const buildLowerArticle = require("./article_functions/buildLowerArticle");
 
 const axiosInstance = axios.create({
   baseURL: "https://news.ycombinator.com/",
