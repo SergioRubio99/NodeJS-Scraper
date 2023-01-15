@@ -1,11 +1,10 @@
-const NodeCache = require("node-cache");
-const crawler = require("../functions/crawler");
-//We set a basic cache with 5m of duration
-const cache = new NodeCache({ stdTTL: 300, checkperiod: 1 });
-console.log(cache);
+const [crawler] = [require("../functions/crawler")];
 
-module.exports = (req,res) => {
-  let page = crawler(req.params.num)
+module.exports = async (req, res) => {
+  req.params.num === undefined ? (req.params.num = 1) : "";
+  let page = await crawler(req.params.num);
   let articles_arr = [];
-  return res.status(200).json({ articles_arr });
-}
+  page.concat(articles_arr);
+  console.log(page);
+  return res.status(200).json({ "nycombinator": page });
+};
