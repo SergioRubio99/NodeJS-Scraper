@@ -10,7 +10,7 @@ const buildLowerArticle = (article_side) => {
     let user = getUser(article_side);
     let age = getAge(article_side);
     let comments = getComments(article_side);
-    return {points, user, age, comments}
+    return {points, user, age, comments};
 }
 
 module.exports = buildLowerArticle
