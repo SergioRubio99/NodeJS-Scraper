@@ -3,59 +3,26 @@ const saveCache = require("../functions/cache").saveCache;
 const getCache = require("../functions/cache").getCache;
 
 module.exports = async (req, res) => {
-  let [pages_to_scrape, articles_arr] = [parseInt(req.params.num), []];
-  let isCacheEmpty = Object.keys(getCache().data).length === 0;
-  isNaN(pages_to_scrape) ? (pages_to_scrape = 1) : "";
+  //We take the num of pages requested by client in the URL, and check if its existing. In affirmative case, nothing done, in the opposite case, that value is 1.
 
-  if (!isCacheEmpty) {
-    let cachePages = getCache().data["pages"]["v"];
-    //If the number of pages available in the CACHE is the same client requested, just return the cache in the response:
+  let pages_to_scrape = isNaN(parseInt(req.params.num)) ? 1 : parseInt(req.params.num);
+  articles_arr = [],
+  isCacheEmpty = Object.keys(getCache().data).length === 0;
 
-    if (Object.keys(cachePages).length / 30 === pages_to_scrape) {
-      return res.status(200).json({ nycombinator: cachePages });
-    }
+  //If the cache is empty, the cache will be filled with an Array. If it already has data, a new variable (cachePages) will contain that data. Then we define the page the loop will start crawling from (crawlFromPage), using the cache length.
 
-    //If the client wants less pages than those in the cache, just return the number of pages requested from the cache:
+  let cachePages = !isCacheEmpty ? getCache().data["pages"]["v"] : [];
+  crawlFromPage = Object.keys(cachePages).length / 30+1;
 
-    if (Object.keys(cachePages).length / 30 > pages_to_scrape) {
-      return res
-        .status(200)
-        .json({ nycombinator: cachePages.slice(0, pages_to_scrape * 30) });
-    }
-
-    //If the client wants more pages than those in the cache, return all the pages present in the cache, and crawl the missing ones. Then overwrite the cache:
-
-    if (Object.keys(cachePages).length / 30 < pages_to_scrape) {
-      let cacheLen = cachePages.length;
-      console.log(cacheLen)
-      for (i = (cacheLen/30)+1; i <= pages_to_scrape; i++) {
-        let page = await crawler(i);
-        articles_arr.push(page);
-      }
-      console.log(`articles_arr`,
-      articles_arr
-      )
-
-      console.log(`cachePages`,
-      cachePages
-      )
-
-      
-      articles_arr = cachePages.concat(articles_arr);
-      return res.status(200).json({ nycombinator: articles_arr.flat() });
-    }
-  }
-
-
-
-  for (i = 1; i <= pages_to_scrape; i++) {
+  //The slice method default behavior allows to input a second value (until where to substract) larger than the arrays length. In this case, it will cut until there. This is useful in those cases when the number of articles requested by client is lesser than the total of articles cached.
+  articles_arr.push(...cachePages.slice(0, pages_to_scrape * 30));
+  console.log(cachePages.length)
+  
+  //We start crawling:
+  for (i = crawlFromPage; i <= pages_to_scrape; i++) {
     let page = await crawler(i);
     articles_arr.push(page);
   }
-
-  // console.log(Object.keys(getCache().data).length === 0);
-  saveCache(articles_arr.flat());
-  // console.log(Object.keys(getCache().data["pages"]["v"]));
-
+  if(crawlFromPage < pages_to_scrape) saveCache(articles_arr.flat());
   return res.status(200).json({ nycombinator: articles_arr.flat() });
 };
