@@ -8,4 +8,6 @@ console.clear();
 
 
 app.listen(process.env.PORT);
-console.log("Listening, on the 3000 port")
+console.log("Listening, on the 3000 port");
+
+module.exports = app;
