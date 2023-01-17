@@ -37,3 +37,5 @@ Here are the available commands to use the app:
 - **jsdom**: a JS library for parsing an HTTP response containing HTML into a manageable DOM
 - **Express Router**: a router library by Express
 - **node-cache**: a cache library made for NodeJS
+- **Mocha**: Minimalistic testing library
+- **Supertest**: Library for testing HTTP servers
