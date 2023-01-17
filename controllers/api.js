@@ -16,7 +16,6 @@ module.exports = async (req, res) => {
 
     // Add cache pages to articles array up to the number of pages requested
     articles_arr.push(...cachePages.slice(0, pages_to_scrape * 30));
-    console.log(cachePages.length)
 
     //Start crawling:
     for (i = crawlFromPage; i <= pages_to_scrape; i++) {

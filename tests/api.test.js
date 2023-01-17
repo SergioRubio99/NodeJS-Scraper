@@ -20,8 +20,19 @@ it("respond with json containing an array", (done) => {
 
 it("Each array element is an object", async () => {
   let res = await request(app).get("/"),
-  arr = res.body["nycombinator"].slice(0,10)
+    arr = res.body["nycombinator"].slice(0, 10);
   arr.forEach((art) => {
     typeof art === "object" ? "" : done("Not an array!");
+  });
+});
+
+it("Each article element has 6 entries", async () => {
+  let res = await request(app).get("/3"),
+    arr = res.body["nycombinator"];
+  arr.forEach((art) => {
+    typeof art === "object" ? "" : done("Not an object!");
+    Object.keys(art).forEach((e) => {
+      e ? "" : done("One article has less than 6 entries");
+    });
   });
 });
