@@ -16,18 +16,18 @@ module.exports = async (req, res) => {
 
     // Add cache pages to articles array up to the number of pages requested
     articles_arr.push(...cachePages.slice(0, pages_to_scrape * 30));
-    console.log(cachePages.length)
 
     //Start crawling:
     for (i = crawlFromPage; i <= pages_to_scrape; i++) {
       let page = await crawler(i);
-      console.log(`Page ${i} crawled!`);
       articles_arr.push(page);
     }
-    if(crawlFromPage < pages_to_scrape) saveCache(articles_arr.flat());
+    //If we had to crawl anything, renew the cache:
+
+    if(crawlFromPage <= pages_to_scrape) saveCache(articles_arr.flat());
     return res.status(200).json({ nycombinator: articles_arr.flat() });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Error al procesar la solicitud" });
-  }
+  } 
 };

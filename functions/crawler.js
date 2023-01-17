@@ -24,5 +24,6 @@ module.exports = async (pages) => {
     };
     page_arr.push(obj);
   });
+  console.log(`Page ${i} crawled!`);
   return page_arr
 };;
