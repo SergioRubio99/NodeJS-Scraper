@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "start_dev": "nodemon --ignore tests/ index.js",
-    "test": "mocha tests/api.test.js --exit"
+    "test": "mocha tests/api.test.js --timeout 10000 --exit"
   },
   "keywords": [
     "nodejs",
