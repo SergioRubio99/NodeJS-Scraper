@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
     //If we had to crawl anything, renew the cache:
 
     if(crawlFromPage <= pages_to_scrape) saveCache(articles_arr.flat());
-    return res.status(200).json({ nycombinator: articles_arr.flat() });
+    return res.status(200).json(  articles_arr.flat()  );
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Error al procesar la solicitud" });
