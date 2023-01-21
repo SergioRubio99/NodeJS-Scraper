@@ -1,12 +1,15 @@
 const NodeCache = require("node-cache");
-const cache = new NodeCache({ stdTTL: 300, checkperiod: 1 });
+const cache = new NodeCache({ stdTTL: 15, checkperiod: 1 });
 
-const saveCache = (pages_arr) => {
-    cache.set(`pages`, pages_arr);
+const saveArticle = (page) => {
+    cache.set(`page ${page[0]}`, page);
 }
 
-const getCache = () => {
-    return cache;
+const getArticle = (page) => {
+    if(cache.get(`page ${page}`)){
+        console.log(cache.get(`page ${page}`)[0])
+        return cache.get(`page ${page}`);
+    }
 }
 
-module.exports = {saveCache, getCache};
+module.exports = {saveArticle, getArticle};
