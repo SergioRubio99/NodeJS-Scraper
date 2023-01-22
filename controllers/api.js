@@ -35,7 +35,7 @@ module.exports = async (req, res) => {
       });
       if (art_arr.length === pages) {
         clearInterval(Output);
-        return res.status(200).json(art_arr);
+        return res.status(200).json( art_arr.flatMap(e => e.slice(1)).flat());
       }
     }, 10);
   } catch (error) {

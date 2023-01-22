@@ -14,4 +14,4 @@ const getArticle = (page) => {
   }
 };
 
-module.exports = { saveArticle, getArticle };
+module.exports = { saveArticle, getArticle, cache };

@@ -1,11 +1,18 @@
-const [buildUpperArticle, buildLowerArticle, DOM] = [
+const [buildUpperArticle, buildLowerArticle, DOM, getArticle] = [
   require("./article_functions/buildUpperArticle"),
   require("./article_functions/buildLowerArticle"),
   require("./getDOM"),
+  require("../functions/cache").getArticle
 ];
- 
-module.exports = async (pages) => {
-  const { document } = await DOM(pages);
+
+module.exports = async (page) => {
+  if (getArticle(page)) {
+    console.log(
+      `Page ${page} is already present in the cache`
+    );
+    return page_arr;
+  }
+  const { document } = await DOM(page);
   [upperArr, lowerArr, page_arr] = [[], [], []];
   //First, we call buildUpperArticle() to scrape the first half of the article:
   document.querySelectorAll('span[class="titleline"] > a').forEach((e) => {
@@ -24,6 +31,6 @@ module.exports = async (pages) => {
     };
     page_arr.push(obj);
   });
-  console.log(`Page ${pages} crawled!`);
-  return page_arr
-};;
+  console.log(`Page ${page} crawled!`);
+  return page_arr;
+};
