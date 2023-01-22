@@ -10,7 +10,7 @@ module.exports = async (page) => {
     console.log(
       `Page ${page} is already present in the cache`
     );
-    return page_arr;
+    return getArticle(page);
   }
   const { document } = await DOM(page);
   [upperArr, lowerArr, page_arr] = [[], [], []];
