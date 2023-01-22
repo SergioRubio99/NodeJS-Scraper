@@ -36,3 +36,19 @@ it("Each article element has 6 entries", async () => {
     });
   });
 });
+
+it("Each URL element is a String with an URL or 'none' inside", async () => {
+  request(app)
+    .get("/4")
+    .expect(200)
+    .end(function (err, res) {
+      res.body.forEach((art) => {
+        //each URl must be a link or a none string (see article_url function)
+        if (!/http/g.test(art.url) && !/none/g.test(art.url)) {
+          throw err
+        }
+      });
+    });
+
+  // !/http/g.test(art) && !/none/g.test(art)
+});

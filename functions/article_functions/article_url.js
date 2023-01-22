@@ -1,5 +1,9 @@
 let getUrl = (element) => {
-  return element.href;
+  if (/http/.test(element.href)) {
+    return element.href;
+  }
+  //Sometimes the website doesn't provice an URL.
+  return "none";
 };
 
 module.exports = getUrl;
