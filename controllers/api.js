@@ -2,21 +2,19 @@ const getArticle = require("../functions/cache").getArticle;
 const saveArticle = require("../functions/cache").saveArticle;
 const crawler = require("../functions/crawler");
 
-
 module.exports = async (req, res) => {
   try {
     //validation to ensure that a number is entered
-    let pages = isNaN(parseInt(req.params.num))? 1: parseInt(req.params.num);
+    let pages = isNaN(parseInt(req.params.num)) ? 1 : parseInt(req.params.num);
 
     let art_arr = [];
-    let ms = 200;
+    let ms = 100;
     for (i = 1; i <= pages; i++) {
       let cache_art = getArticle(i);
       if (cache_art) {
         art_arr.push(cache_art);
       } else {
-        console.log("CRAWLING");
-        ms += 900;
+        ms += 500;
         let crawl = function (i) {
           setTimeout(async () => {
             let crawled = await crawler(i);
@@ -37,9 +35,7 @@ module.exports = async (req, res) => {
       });
       if (art_arr.length === pages) {
         clearInterval(Output);
-        return res.status(200).json(
-          art_arr.flatMap(e => e.slice(1)).flat()
-        );
+        return res.status(200).json(art_arr.flatMap((e) => e.slice(1)).flat());
       }
     }, 10);
   } catch (error) {
