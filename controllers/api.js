@@ -1,4 +1,5 @@
 const crawl = require("../controllers/methods/crawl");
+const compare = require("../controllers/methods/compare");
 
 module.exports = async (req, res) => {
   try {
@@ -22,12 +23,3 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: "Error al procesar la solicitud" });
   }
 };
-
-
-let compare =  function (a, b){
-  if (a[0] > b[0]) {
-    return 1;
-  } else {
-    return -1;
-  }
-}
