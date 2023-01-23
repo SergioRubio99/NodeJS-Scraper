@@ -1,21 +1,19 @@
-const crawl = require("../controllers/methods/crawl");
-const compare = require("../controllers/methods/compare");
+const crawl = require("./controller_methods/crawl")
 
 module.exports = async (req, res) => {
   try {
     //validation to ensure that a number is entered
     let pages = isNaN(parseInt(req.params.num)) ? 1 : parseInt(req.params.num),
-    art_arr = [],
-    DELAY = 900;
+    art_arr = [];
     for (i = 1; i <= pages; i++) {
-        DELAY += 900;
-        crawl(i, DELAY, art_arr);
+        crawl(i, art_arr);
     }
-    let Output = setInterval(() => {
+    
+    const crawl_interval = setInterval(() => {
       if (art_arr.length === pages) {
         art_arr = art_arr.sort(compare);
-        clearInterval(Output);
-        return res.status(200).json(art_arr);
+        clearInterval(crawl_interval);
+        return res.status(200).json(art_arr.map(e => e.slice(1)).flat(2));
       }
     }, 10);
   } catch (error) {
@@ -23,3 +21,13 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: "Error al procesar la solicitud" });
   }
 };
+
+
+const compare =  function (a, b){
+  if (a[0] > b[0]) {
+    return 1;
+  } else {
+    return -1;
+  }
+}
+ 
