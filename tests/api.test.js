@@ -25,6 +25,14 @@ it("Each article element has 6 entries", async () => {
   });
 });
 
+it("Each title is a String", async () => {
+  let res = await request(app).get("/3"),
+    arr = res.body;
+    arr.forEach((art) => {
+      expect(typeof art.title === "string").to.eql(true)
+  });
+});
+
 it("Each URL element is a String with an URL or 'none' inside", async () => {
   let res = await request(app).get("/2")
   let arr = res.body;
