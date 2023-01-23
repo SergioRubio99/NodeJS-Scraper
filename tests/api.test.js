@@ -19,8 +19,8 @@ it("respond with json containing an array", async () => {
 it("Each array element is an object", async () => {
   let res = await request(app).get("/"),
     arr = res.body.slice(0, 10);
-  arr.forEach((art) => {
-    typeof art === "object" ? "" : done("Not an array!");
+    arr.forEach((art) => {
+    expect(typeof art == "object").to.eql(true);
   });
 });
 
