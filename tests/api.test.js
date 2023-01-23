@@ -25,11 +25,13 @@ it("Each article element has 6 entries", async () => {
   });
 });
 
-it("Each title is a String", async () => {
+it("Each title, user or age field, contains a String", async () => {
   let res = await request(app).get("/3"),
     arr = res.body;
     arr.forEach((art) => {
-      expect(typeof art.title === "string").to.eql(true)
+      expect(typeof art.title === "string").to.eql(true);
+      expect(typeof art.user === "string").to.eql(true);
+      expect(typeof art.age === "string").to.eql(true);
   });
 });
 
