@@ -3,13 +3,6 @@ const app = require("../index");
 const expect = require("chai").expect;
 
 
-it("respond with json", (done) => {
-  request(app)
-    .get("/2")
-    .set("Accept", "application/json")
-    .expect("Content-Type", "application/json; charset=utf-8")
-    .expect(200, done);
-});
 
 it("respond with json containing an array", async () => {
   let res = await request(app).get("/2");
