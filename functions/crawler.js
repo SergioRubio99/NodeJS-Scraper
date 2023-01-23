@@ -6,12 +6,6 @@ const [buildUpperArticle, buildLowerArticle, DOM, getArticle] = [
 ];
 
 module.exports = async (page) => {
-  if (getArticle(page)) {
-    console.log(
-      `Page ${page} is already present in the cache`
-    );
-    return getArticle(page);
-  }
   const { document } = await DOM(page);
   [upperArr, lowerArr, page_arr] = [[], [], []];
   //First, we call buildUpperArticle() to scrape the first half of the article:
@@ -32,5 +26,5 @@ module.exports = async (page) => {
     page_arr.push(obj);
   });
   console.log(`Page ${page} crawled!`);
-  return page_arr;
+  return [page, page_arr];
 };

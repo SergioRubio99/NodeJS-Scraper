@@ -8,7 +8,7 @@ const saveArticle = (page) => {
 const getArticle = (page) => {
   if (cache.get(`page ${page}`)) {
     console.log(
-      `Page ${cache.get(`page ${page}`)[0]} retrieved from the cache!`
+      `Controller: page ${cache.get(`page ${page}`)[0]} retrieved from the cache!`
     );
     return cache.get(`page ${page}`);
   }
