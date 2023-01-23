@@ -31,11 +31,8 @@ it("Each array element is an object", async () => {
 it("Each article element has 6 entries", async () => {
   let res = await request(app).get("/3"),
     arr = res.body;
-  arr.forEach((art) => {
-    typeof art === "object" ? "" : done("Not an object!");
-    Object.keys(art).forEach((e) => {
-      e ? "" : done("One article has less than 6 entries");
-    });
+    arr.forEach((art) => {
+      expect(Object.keys(art).length).to.eql(6)
   });
 });
 
