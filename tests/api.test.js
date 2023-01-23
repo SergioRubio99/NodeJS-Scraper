@@ -11,13 +11,9 @@ it("respond with json", (done) => {
     .expect(200, done);
 });
 
-it("respond with json containing an array", (done) => {
-  request(app)
-    .get("/")
-    .then((res) => {
-      array = res.body;
-      Array.isArray(array) ? done() : done("Not an array!");
-    });
+it("respond with json containing an array", async () => {
+  let res = await request(app).get("/2");
+  expect(Array.isArray(res.body)).to.eql(true)
 });
 
 it("Each array element is an object", async () => {
@@ -39,10 +35,8 @@ it("Each article element has 6 entries", async () => {
 it("Each URL element is a String with an URL or 'none' inside", async () => {
   let res = await request(app).get("/2")
   let arr = res.body;
-  console.log(arr)
   arr.forEach(art => {
     if(!/http/g.test(art.url)){
-     console.log(/none/g.test(art.url))
       expect(/none/g.test(art.url)).to.eql(true)
     }
   })
