@@ -4,31 +4,28 @@ const expect = require("chai").expect;
 
 
 
+let res;
+let artsArr;
 it("respond with json containing an array", async () => {
-  let res = await request(app).get("/2");
-  expect(Array.isArray(res.body)).to.eql(true)
+  res = await request(app).get("/4");
+  artsArr = res.body
+  expect(Array.isArray(artsArr)).to.eql(true)
 });
 
 it("Each array element is an object", async () => {
-  let res = await request(app).get("/"),
-    arr = res.body.slice(0, 10);
-    arr.forEach((art) => {
+    artsArr.slice(0, 10).forEach((art) => {
     expect(typeof art == "object").to.eql(true);
   });
 });
 
 it("Each article element has 6 entries", async () => {
-  let res = await request(app).get("/3"),
-    arr = res.body;
-    arr.forEach((art) => {
+  artsArr.forEach((art) => {
       expect(Object.keys(art).length).to.eql(6)
   });
 });
 
 it("Each title, user or age field, contains a String", async () => {
-  let res = await request(app).get("/3"),
-    arr = res.body;
-    arr.forEach((art) => {
+  artsArr.forEach((art) => {
       expect(typeof art.title === "string").to.eql(true);
       expect(typeof art.user === "string").to.eql(true);
       expect(typeof art.age === "string").to.eql(true);
@@ -36,9 +33,7 @@ it("Each title, user or age field, contains a String", async () => {
 });
 
 it("Each URL element is a String with an URL or 'none' inside", async () => {
-  let res = await request(app).get("/2")
-  let arr = res.body;
-  arr.forEach(art => {
+  artsArr.forEach(art => {
     if(!/http/g.test(art.url)){
       expect(/none/g.test(art.url)).to.eql(true)
     }
