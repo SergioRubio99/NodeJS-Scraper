@@ -6,8 +6,7 @@ It scrapes each article and extracts its title, link, age, creator, number of co
 
 Here's an example of what the JSON file will look like:
 
-```{
-"nycombinator": [
+```{[
 {
 "title": "Show HN: Plus – Self Updating Screenshots",
 "url": "https://www.plusdocs.com/",
@@ -19,7 +18,6 @@ Here's an example of what the JSON file will look like:
 {...},
 {...}
 ]
-}
 ```
 
 ## Usage
@@ -39,3 +37,4 @@ Here are the available commands to use the app:
 - **node-cache**: a cache library made for NodeJS
 - **Mocha**: Minimalistic testing library
 - **Supertest**: Library for testing HTTP servers
+- **Chai**: Testing assertion library.
