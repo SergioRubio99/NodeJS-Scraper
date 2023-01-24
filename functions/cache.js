@@ -1,5 +1,5 @@
 const NodeCache = require("node-cache");
-const cache = new NodeCache({ stdTTL: 15, checkperiod: 1 });
+const cache = new NodeCache({ stdTTL: 300, checkperiod: 1 });
 
 const saveArticle = (page) => {
   cache.set(`page ${page[0]}`, page);
