@@ -4,17 +4,13 @@ const crawler = require("../../functions/crawler");
 let crawl = function (page, art_arr) {
     let crawled = cacheArticle(page);
     if (crawled) {
-      art_arr.push(crawled);
+        art_arr.push(cacheArticle(page));
+        console.log(`Controller: page ${page} retrieved from the cache!`);
     } else {
       setTimeout(async () => {
-        if(cacheArticle(page)){
-          crawled = cacheArticle(page)
-          art_arr.push(crawled);
-        }else{
           crawled = await crawler(page);
-          saveArticle(crawled); 
+          saveArticle(crawled);
           art_arr.push(crawled);
-        }
       });
     }
   };
