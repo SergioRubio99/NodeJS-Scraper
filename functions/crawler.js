@@ -1,8 +1,7 @@
-const [buildUpperArticle, buildLowerArticle, DOM, getArticle] = [
+const [buildUpperArticle, buildLowerArticle, DOM] = [
   require("./article_functions/buildUpperArticle"),
   require("./article_functions/buildLowerArticle"),
-  require("./getDOM"),
-  require("../functions/cache").getArticle
+  require("./getDOM")
 ];
 
 module.exports = async (page) => {
