@@ -21,13 +21,3 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: "Error al procesar la solicitud" });
   }
 };
-
-
-const compare =  function (a, b){
-  if (a[0] > b[0]) {
-    return 1;
-  } else {
-    return -1;
-  }
-}
- 
