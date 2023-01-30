@@ -1,4 +1,4 @@
-const crawl = require("./controller_methods/crawl")
+const getPage = require("./controller_methods/getPage")
 const compare = require("./controller_methods/compare")
 module.exports = async (req, res) => {
   try {
@@ -6,7 +6,7 @@ module.exports = async (req, res) => {
     let pages = isNaN(parseInt(req.params.num)) ? 1 : parseInt(req.params.num),
     art_arr = [];
     for (i = 1; i <= pages; i++) {
-        crawl(i, art_arr);
+        getPage(i, art_arr);
     }
     
     const crawl_interval = setInterval(() => {
