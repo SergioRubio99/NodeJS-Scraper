@@ -1,5 +1,5 @@
 const crawl = require("./controller_methods/crawl")
-
+const compare = require("./controller_methods/compare")
 module.exports = async (req, res) => {
   try {
     //validation to ensure that a number is entered
