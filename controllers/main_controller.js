@@ -9,10 +9,10 @@ module.exports = async (req, res) => {
         getPage(i, art_arr);
     }
     
-    const crawl_interval = setInterval(() => {
+    const halt = setInterval(() => {
       if (art_arr.length === pages) {
         art_arr = art_arr.sort(compare);
-        clearInterval(crawl_interval);
+        clearInterval(halt);
         return res.status(200).json(art_arr.map(e => e.slice(1)).flat(2));
       }
     }, 10);
