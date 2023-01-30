@@ -7,7 +7,7 @@ app.use("/", api);
 console.clear();
 
 
-app.listen(process.env.PORT);
+app.listen(3000);
 console.log("Listening, on the 3000 port");
 
 module.exports = app;
