@@ -1,7 +1,6 @@
 const express = require("express");
 const app = express();
 const api = require("./controllers/main_controller");
-require('dotenv').config();
 
 app.get("/:num?", api);
 
