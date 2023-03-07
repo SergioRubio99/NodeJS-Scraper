@@ -23,8 +23,8 @@ Here's an example of what the JSON file will look like:
 
 Just pull the image and run it.
 
- - docker pull sergiorubio99/node_scraper
- - ` sudo docker container run --rm -it -p [DESIRED PORT]:3000 --name node sergiorubio99/node_scraper `
+ - ` docker pull sergiorubio99/node_scraper `
+ - ` docker container run --rm -it -p [DESIRED PORT]:3000 --name node sergiorubio99/node_scraper `
 
 Inside the container, just run `npm run start` to lift the server, or `npm run test` to run the tests.
 
