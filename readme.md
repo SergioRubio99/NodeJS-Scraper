@@ -19,8 +19,16 @@ Here's an example of what the JSON file will look like:
 {...}
 ]
 ```
+## How to run it with Docker:
 
-## Usage
+Just pull the image and run it.
+
+ - docker pull sergiorubio99/node_scraper
+ - ` sudo docker container run --rm -it -p [DESIRED PORT]:3000 --name node sergiorubio99/node_scraper `
+
+Inside the container, just run `npm run start` to lift the server, or `npm run test` to run the tests.
+
+## How to run it in your local machine: 
 
 To use the app, you will need to install the dependencies listed in the `package.json` file. You can do this by running `npm i` in the terminal. 
 
