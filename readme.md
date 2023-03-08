@@ -19,12 +19,17 @@ Here's an example of what the JSON file will look like:
 {...}
 ]
 ```
-## How to run it with Docker:
 
-Just pull the image and run it.
+### How to set the app up with Docker:
 
- - ` docker pull sergiorubio99/node_scraper `
- - ` docker container run --rm -it -p [DESIRED PORT]:3000 --name node sergiorubio99/node_scraper `
+Use the following command in the project folder to build the image:
+ - `docker image build -t nodescraper .`
+ <br>
+ 
+Use the following command to run the image on the 3000 port:
+<br>
+- ` docker container run --rm -it -p 3000:3000 --name node nodescraper `
+
 
 Inside the container, just run `npm run start` to lift the server, or `npm run test` to run the tests.
 
